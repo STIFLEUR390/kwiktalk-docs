@@ -1,0 +1,9 @@
+# Nixpacks build configuration
+# https://nixpacks.com/docs/configuration/file
+
+[variables]
+NODE_OPTIONS = "--max-old-space-size=2560"
+NITRO_PRESET = "node-server"
+
+[start]
+cmd = "node .output/server/index.mjs"
