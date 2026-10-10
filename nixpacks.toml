@@ -2,6 +2,7 @@
 # https://nixpacks.com/docs/configuration/file
 
 [variables]
+NIXPACKS_NODE_VERSION = "22"
 NODE_OPTIONS = "--max-old-space-size=2560"
 NITRO_PRESET = "node-server"
 
