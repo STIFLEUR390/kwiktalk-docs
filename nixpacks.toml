@@ -3,7 +3,8 @@
 
 [variables]
 NIXPACKS_NODE_VERSION = "22"
-NODE_OPTIONS = "--max-old-space-size=2560"
+# 1536: testé en build à froid — pic mémoire ~2.1 Go (contre ~6 Go à 2560, OOM/swap sur VPS)
+NODE_OPTIONS = "--max-old-space-size=1536"
 NITRO_PRESET = "node-server"
 
 [start]
