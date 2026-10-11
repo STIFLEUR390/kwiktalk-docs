@@ -9,6 +9,28 @@ seo:
 Documentation KwikTalk
 #description
 Tout ce qu'il faut pour connecter votre numéro, importer vos contacts et envoyer vos premières campagnes WhatsApp.
+
+#links
+  :::u-button
+  ---
+  color: neutral
+  size: xl
+  to: /fr/pour-demarrer/premiers-pas
+  trailing-icon: i-lucide-arrow-right
+  ---
+  Premiers pas
+  :::
+
+  :::u-button
+  ---
+  color: neutral
+  icon: i-lucide-credit-card
+  size: xl
+  to: /fr/pour-demarrer/tarifs
+  variant: outline
+  ---
+  Tarifs
+  :::
 ::
 
 ## Pour qui est cette documentation ?
