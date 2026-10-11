@@ -66,9 +66,11 @@ kill "$DPID"
   `en/`, sinon une langue a des pages en moins.
 - **Le `<title>` suffixé « - kwiktalk-docs »** vient de Docus, pas du `seo.title`
   du frontmatter. Pas de `app.config.ts` dans le projet.
-- **`better-sqlite3` n'est pas utilisé au runtime** : Docus charge
-  `@sqlite.org/sqlite-wasm`. La dépendance native ne sert qu'au build, si tant est
-  qu'elle serve.
+- **Ne pas supprimer `better-sqlite3`** : c'est un *peer dependency obligatoire* de
+  Docus (`12.x`, non optionnel), utilisé par la base SQLite de contenu **au build**.
+  Il est absent de `.output/` (donc pas dans l'image) — le retirer casserait le
+  `npm install`/build. Inversement, Docus charge `@sqlite.org/sqlite-wasm` au
+  runtime : pas de compilation native dans le conteneur.
 
 ## Git
 

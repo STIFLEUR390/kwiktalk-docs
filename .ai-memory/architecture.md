@@ -111,6 +111,8 @@ node .output/server/index.mjs      (Nitro, preset node-server)
     └── @shikijs …                 ← coloration syntaxique
 ```
 
-`better-sqlite3` (dépendance native) est dans le `package.json` mais **absent** du
-bundle `.output/server/node_modules` : Docus charge `@sqlite.org/sqlite-wasm`. Il n'y
-a donc **aucune compilation native au runtime** — le conteneur peut rester minimal.
+`better-sqlite3` est un **peer dependency obligatoire de Docus** (`12.x`, non
+optionnel) : il sert à la **base SQLite de contenu au build**. En revanche il est
+**absent** de `.output/server/node_modules` (Docus charge `@sqlite.org/sqlite-wasm`
+au runtime) → **aucune compilation native dans le conteneur**, l'image reste
+minimale. Ne pas le retirer du `package.json` : le build casserait.

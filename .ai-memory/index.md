@@ -89,8 +89,10 @@ grep -rnE "^ +[a-z_]+: [^\"].*: " content/   # doit être vide (YAML valide)
 
 ## Ce qui reste à faire
 
-- `better-sqlite3` est en dépendance mais **jamais utilisé au runtime** (Docus
-  charge `@sqlite.org/sqlite-wasm`). Candidat à la suppression.
+- `better-sqlite3` est présent **et ne doit pas être supprimé** : c'est un
+  *peer dependency obligatoire* de Docus (`12.x`, non optionnel) utilisé par la
+  base SQLite de contenu **au build**. Il n'est pas dans `.output/` (inutile au
+  runtime), donc retirer `@nuxt/content` du `package.json` casserait le build.
 - Les images OG de partage sont **désactivées** tant que Google Fonts est
   injoignable depuis Node — à réactiver si le réseau le permet.
 - La doc ne couvre pas encore : la page `/ressources/blog`, `/securite`,

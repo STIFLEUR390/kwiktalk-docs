@@ -227,7 +227,7 @@ revient.
 
 ---
 
-## 10. Le build échoue à récupérer Google Fonts
+## 10. Le build ne récupère pas Google Fonts
 
 **Symptôme** — pendant le build :
 
@@ -238,17 +238,17 @@ Could not initialize provider `google`. unifont will not be able to process font
 ```
 
 **Cause** — `curl` atteint `fonts.google.com` (200) mais **`fetch` de Node échoue**
-(`ETIMEDOUT`). Accès réseau sélectif, indépendant de la résolution DNS ou de
-l'ordre IPv4/IPv6 (`--dns-result-order=ipv4first` ne change rien).
+(`ETIMEDOUT`). Accès réseau sélectif : indépendant du DNS et de l'ordre IPv4/IPv6
+(`--dns-result-order=ipv4first` ne change rien).
 
-**Impact** — Satori n'a plus de polices → la génération des images OG échoue, et
-les pages concernées tombent en 500 **au prerender** (pas au runtime).
+**Impact réel — un warning, pas une erreur.** `unifont` bascule sur des polices de
+repli et **la génération des images OG reste fonctionnelle** (vérifié : 42 images
+OG produites, prerender à 0 erreur).
 
-**Solution** — Désactiver `ogImage` dans `nuxt.config.ts` :
+> **Ne pas désactiver `ogImage` pour ce motif.** Ce diagnostic a été longtemps
+attribué à tort aux pannes de prerender (§8) : la vraie cause était le frontmatter
+YAML invalide. Un `ogImage: { enabled: false }` non justifié fait simplement
+perdre les images de partage social.
 
-```ts
-ogImage: { enabled: false },
-```
-
-À réactiver si l'environnement de build peut atteindre Google Fonts. La perte est
-cosmétique (pas d'image de partage social) : le site reste complet.
+À surveiller : si des pages commencent à s'afficher avec une typographie de repli,
+c'est que la résolution locale des polices a changé.
