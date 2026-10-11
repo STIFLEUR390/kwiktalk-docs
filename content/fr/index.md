@@ -66,3 +66,11 @@ L'administration de la plateforme (utilisateurs, rôles, plans, facturation inte
 
 - **[Applications API](/fr/integrations/applications-api)** — créez une clé, apparez-la à une instance, envoiez par `POST /api/v1/messages/send`.
 - **[Webhooks](/fr/integrations/webhooks)** — recevez `message.received`, `message.status.updated`, `instance.connected`… avec signature HMAC-SHA256.
+
+## Aide et confiance
+
+- **[Formatteur WhatsApp](/fr/ressources/formatteur-whatsapp)** — outil gratuit pour rédiger et copier un message au format WhatsApp.
+- **[Anti-spam et anti-ban](/fr/ressources/anti-spam)** — les trois modes de protection et les bonnes pratiques d'envoi.
+- **[FAQ](/fr/ressources/faq)** — validation des numéros, sécurité, multi-numéros, essai gratuit.
+- **[Sécurité](/fr/ressources/securite)** — chiffrement, clés API, contrôle des accès, bonnes pratiques.
+- **[Statut de la plateforme](/fr/ressources/statut)** — disponibilité en temps réel et maintenances.

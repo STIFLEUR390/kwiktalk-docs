@@ -66,3 +66,11 @@ Platform administration (users, roles, plans, internal billing, global settings)
 
 - **[API applications](/en/integrations/api-applications)** — create a key, bind it to an instance, call `POST /api/v1/messages/send`.
 - **[Webhooks](/en/integrations/webhooks)** — receive `message.received`, `message.status.updated`, `instance.connected`… with HMAC-SHA256 signatures.
+
+## Help and trust
+
+- **[WhatsApp formatter](/en/resources/whatsapp-formatter)** — free tool to write and copy a message in WhatsApp format.
+- **[Anti-spam and anti-ban](/en/resources/anti-spam)** — the three protection modes and healthy sending practices.
+- **[FAQ](/en/resources/faq)** — number validation, security, multiple numbers, free trial.
+- **[Security](/en/resources/security)** — encryption, API keys, access control, best practices.
+- **[Platform status](/en/resources/status)** — real-time availability and maintenance.
