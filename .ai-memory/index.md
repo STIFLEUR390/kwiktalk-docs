@@ -47,14 +47,52 @@ Tout le reste du fichier est secondaire face à cette règle.
 3. **Push Docker Hub coupé** → upload long d'une seule couche. Couches scindées
    dans le `Dockerfile`.
 4. **`memoryLimit: "3gb"` rejeté** par Dokploy → laisser `null`.
-5. **`/fr/getting-started/` → 404** → pas d'`index.md` dans le dossier, normal.
+5. **`seo.description` avec ` : ` non quoté** → prerender en 500, page absente du
+   build. Voir `errors.md` §8.
+6. **Cache `node_modules/.cache` périmé** → `no such table: _content_docs_en`,
+   toute la locale EN en 404. Voir `errors.md` §9.
+7. **Google Fonts injoignable depuis Node** → `ogImage` désactivé. Voir
+   `errors.md` §10.
+
+## État de la documentation
+
+Réécrite le 11/10/2026 à partir du **code réel** (`kwiktalk-inertiajs`), en bilingue,
+et **déployée en production** (image `v8`).
+
+- **36 pages** : 18 FR + 18 EN, réparties en 5 sections.
+- **Portée** : pages publiques + rôle `user` — jamais l'administration.
+- **Images** : générées avec `codesnap` (`--disable-watermark`), dans `public/images/`.
+- **Section FR** : `1.pour-demarrer`, `2.fonctionnalites`, `3.integrations`,
+  `4.mon-compte`, `5.ressources`.
+- **Section EN** : `1.overview`, `2.features`, `3.integrations`, `4.account`,
+  `5.resources` — noms de dossiers **volontairement différents** (URLs traduites).
+- Branding : logo « KwikTalk », suffixe de titre « KwikTalk Docs ».
+
+### Procédure de mise à jour
+
+Voir [`workflows.md`](workflows.md). En résumé :
+
+```bash
+npm run build
+docker build --pull=false --provenance=false --sbom=false -t devmaster2023/kwiktalk-docs:vN -f Dockerfile .
+docker push devmaster2023/kwiktalk-docs:vN
+# puis Dokploy : saveDockerProvider + deploy, et vérifier le digest du conteneur
+```
+
+**Toujours vérifier après un build** (cf. `tests.md`) :
+
+```bash
+grep -cE '\[500\]|\[404\]' build.log   # doit être 0
+find .output/public -name '*.html' | wc -l  # doit être 36
+grep -rnE "^ +[a-z_]+: [^\"].*: " content/   # doit être vide (YAML valide)
+```
 
 ## Ce qui reste à faire
 
-- Le titre affiché porte encore le suffixe du template Docus
-  (« … - kwiktalk-docs ») au lieu de « KwikTalk Docs ».
-- `content/fr/` et `content/en/` sont désynchronisés : le template Docus par défaut
-  contient des pages de démo (studio, migration, troubleshooting) sans lien avec
-  KwikTalk.
 - `better-sqlite3` est en dépendance mais **jamais utilisé au runtime** (Docus
   charge `@sqlite.org/sqlite-wasm`). Candidat à la suppression.
+- Les images OG de partage sont **désactivées** tant que Google Fonts est
+  injoignable depuis Node — à réactiver si le réseau le permet.
+- La doc ne couvre pas encore : la page `/ressources/blog`, `/securite`,
+  `/confidentialite`, `/cgu` et `/statut` du site produit (pages publiques du
+  Laravel, à documenter si besoin).

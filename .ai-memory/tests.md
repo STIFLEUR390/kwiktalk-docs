@@ -82,3 +82,58 @@ curl -s -o /dev/null -w "%{http_code}\n" https://kwiktalk-docs.applix.fr/fr/gett
 - Nettoyer les images locales de test :
   `docker rmi devmaster2023/kwiktalk-docs:vN` (l'image poussée reste disponible sur
   Docker Hub).
+
+---
+
+## Vérifier un build de contenu
+
+Ces contrôles sont **obligatoires** après toute modification de `content/`. Un
+build `exit=0` ne prouve **rien** : le prerender peut échouer silencieusement et
+laisser des pages absentes.
+
+```bash
+npm run build > /tmp/build.log 2>&1; echo "exit=$?"
+
+# 1. aucune route en échec (500 = YAML cassé, 404 = lien mort)
+grep -cE '\[500\]|\[404\]' /tmp/build.log        # attendu : 0
+grep -E '\[500\]|\[404\]|Linked from' /tmp/build.log
+
+# 2. toutes les pages générées (36 = 18 FR + 18 EN)
+find .output/public -name '*.html' | wc -l       # attendu : 36
+grep -oE 'Prerendered [0-9]+ routes' /tmp/build.log  # attendu : ~119
+
+# 3. aucun frontmatter YAML invalide (virgule+espace non quoté)
+grep -rnE '^ +[a-z_]+: [^"].*: ' content/        # attendu : vide
+
+# 4. aucune table de contenu manquante (cache périmé)
+grep -c "no such table" /tmp/build.log            # attendu : 0
+```
+
+## Vérifier les liens internes
+
+Un lien mort ne casse pas le build : il laisse un trou. Contrôle statique :
+
+```bash
+# comparer chaque lien ](/fr/…) et ](/en/…) aux routes dérivées des fichiers
+# (préfixes numériques « 1. » retirés). Attendu : 0 lien brisé.
+```
+
+Le prerender fait aussi ce travail (`Linked from …`), mais uniquement si le
+crawler atteint la page — donc seulement si les landings sont passés.
+
+## Test navigateur (agent-browser)
+
+```bash
+export AGENT_BROWSER_SESSION="$(agent-browser session id --scope worktree --prefix task)"
+agent-browser open http://localhost:3111/fr
+agent-browser eval "document.querySelectorAll('h1').length"   # attendu : 1
+agent-browser screenshot /tmp/check.png
+agent-browser close
+```
+
+Points de contrôle visuels : logo « KwikTalk » (pas « kwiktalk-docs »), titres de
+section accentués, un seul H1, images `public/images/` affichées, bascule de
+langue fonctionnelle.
+
+**Hygiène** : toujours un nom de session propre (`AGENT_BROWSER_SESSION`), et
+`agent-browser close` en fin de tâche.

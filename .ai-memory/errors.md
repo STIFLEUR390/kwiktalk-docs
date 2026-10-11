@@ -149,3 +149,106 @@ SSR. Le `node-server` Nitro n'est pas pré-warmé.
 
 **Solution** — Aucune, c'est normal et non bloquant. Seuls les appels suivants
 comptent pour la mesure (0,5-2 s).
+
+---
+
+## 8. Prerender : `500` sur certaines pages (alors qu'elles marchent au runtime)
+
+**Symptôme** — `npm run build` affiche `[500] Server Error` pour une ou plusieurs
+routes pendant le prerender, mais **la même page répond 200 au runtime**. Le build
+sort avec `exit=0` et le site « marche » : c'est un piège, car les pages touchées
+ne sont tout simplement **pas générées**.
+
+**Cause n°1 — YAML invalide dans le frontmatter.**
+
+```yaml
+seo:
+  description: KwikTalk est une plateforme WhatsApp : instances, contacts...
+                        #               ^^^^^ virgule+espace = séparateur YAML
+```
+
+Le `: ` (deux-points **suivi d'une espace**) dans une valeur **non quotée** casse
+le parsing → erreur silencieuse → 500. Seules les pages concernées tombent.
+
+**Solution** — Entourer la valeur de guillemets :
+
+```yaml
+seo:
+  description: "KwikTalk est une plateforme WhatsApp : instances, contacts..."
+```
+
+**Diagnostic rapide** — les pages en 500 sont exactement celles qui contiennent
+` : ` :
+
+```bash
+grep -rnE "^ +[a-z_]+: [^\"].*: " content/
+```
+
+**Cause n°2 — course avec l'init de la base de contenu.** Les premières pages
+enfants d'un landing sont prerenderées pendant que SQLite s'initialise et
+échouent (elles marchent au runtime). Reconnaissable : ce sont toujours les
+**direct children** du landing, celles listées `Linked from /fr`. Un réglage
+`nitro.prerender.concurrency` ne règle rien (voire empire).
+
+---
+
+## 9. Toutes les pages EN renvoient 404, les FR marchent
+
+**Symptôme** — `/fr/...` répond 200, **toutes** les routes `/en/...` renvoient 404,
+y compris `/en` lui-même. Le sitemap (`/sitemap.md`) affiche pourtant les
+documents EN avec les bons chemins.
+
+**Cause** — La base SQLite de @nuxt/content est ** périmée en cache**. Au build,
+les `INSERT` échouent en :
+
+```
+Failed to execute SQL INSERT INTO _content_docs_en ... no such table: _content_docs_en
+```
+
+Le manifeste déclare la collection (checksum present) mais la table n'existe
+jamais → chaque query renvoie 500 → la route est perçue comme absente → 404.
+
+**Diagnostic** — chercher dans les logs du build :
+
+```bash
+npm run build 2>&1 | grep -c "no such table"
+```
+
+**Solution** — Vider le cache Nuxt, pas seulement `.nuxt` et `.output` :
+
+```bash
+rm -rf node_modules/.cache .nuxt .output
+npm run build
+```
+
+⚠️ Ce nettoyage est **à faire après tout changement de structure de contenu**
+(ajout/suppression de locale, de collection ou de dossier), sinon le symptôme
+revient.
+
+---
+
+## 10. Le build échoue à récupérer Google Fonts
+
+**Symptôme** — pendant le build :
+
+```
+Could not fetch from `https://fonts.google.com/metadata/fonts`. Will retry...
+Could not initialize provider `google`. unifont will not be able to process fonts...
+[cause]: AggregateError [ETIMEDOUT]
+```
+
+**Cause** — `curl` atteint `fonts.google.com` (200) mais **`fetch` de Node échoue**
+(`ETIMEDOUT`). Accès réseau sélectif, indépendant de la résolution DNS ou de
+l'ordre IPv4/IPv6 (`--dns-result-order=ipv4first` ne change rien).
+
+**Impact** — Satori n'a plus de polices → la génération des images OG échoue, et
+les pages concernées tombent en 500 **au prerender** (pas au runtime).
+
+**Solution** — Désactiver `ogImage` dans `nuxt.config.ts` :
+
+```ts
+ogImage: { enabled: false },
+```
+
+À réactiver si l'environnement de build peut atteindre Google Fonts. La perte est
+cosmétique (pas d'image de partage social) : le site reste complet.

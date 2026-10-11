@@ -53,19 +53,35 @@ en inventer — voir [`.ai-memory/tests.md`](.ai-memory/tests.md).
 
 ## Contenu
 
-- Tout le contenu vit dans `content/{fr,en}/`.
-- **Les fichiers sont numérotés** : `1.<section>/`, puis `2.`… à l'intérieur.
-  Le préfixe `1.` d'un dossier est réservé à son `index.md`.
-- Un dossier **sans `index.md` renvoie un 404** sur son URL racine
-  (`/fr/getting-started/` → 404). C'est le comportement actuel, pas un bug serveur.
+- Tout le contenu vit dans `content/{fr,en}/`, **36 pages** (18 par locale).
+- **Les sections portent des noms différents d'une locale à l'autre** (URLs
+  traduites) : FR `1.pour-demarrer`, `2.fonctionnalites`, `3.integrations`,
+  `4.mon-compte`, `5.ressources` · EN `1.overview`, `2.features`,
+  `3.integrations`, `4.account`, `5.resources`.
+- **Les fichiers sont numérotés** : le préfixe `1.` d'un dossier est réservé à son
+  `index.md`, les pages commencent à `2.`. Le préfixe n'apparaît pas dans l'URL.
+- Chaque dossier de section contient un **`.navigation.yml`** (`title:`) : sans lui,
+  la sidebar affiche le nom de dossier brut (« Fonctionnalites », sans accent).
+- Un dossier **sans `index.md` renvoie un 404** sur son URL racine.
 - Les deux locales doivent rester **synchronisées** : toute page ajoutée en `fr`
   doit l'être en `en`, et inversement.
 
+### Pièges de rédaction
+
+- **Guillemeter** toute valeur de frontmatter contenant ` : `, sinon le prerender
+  échoue en 500 et la page manque au build (voir `.ai-memory/errors.md` §8).
+- **Ne pas remettre `# Titre`** en tête du corps : Docus génère déjà le `<h1>`
+  depuis `title:` — sinon double H1.
+- Ne pas répéter « KwikTalk » dans `seo.title` : Docus ajoute déjà
+  ` - KwikTalk Docs`.
+- Après modification : `.ai-memory/tests.md` liste les 4 contrôles obligatoires
+  (build sans 500/404, 36 HTML, YAML valide, cache non périmé).
+
 Pour générer une image de code dans la doc, utiliser **`codesnap`** (déjà installé)
-plutôt qu'un capture d'écran :
+plutôt qu'une capture d'écran. Sortie dans `public/images/` :
 
 ```bash
-codesnap -f src/foo.ts --range 3:10 -o content/docs/cli/foo.png
+codesnap -f src/foo.ts --range 3:10 --disable-watermark -o public/images/foo.png
 ```
 
 ---

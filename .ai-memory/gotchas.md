@@ -77,3 +77,46 @@ kill "$DPID"
 - **Ne pas committer `.output/`** (70 Mo), il est dans `.gitignore`.
 - **`aicommit2 -d` peut crasher** (`ERR_USE_AFTER_CLOSE` sur le prompt inquirer).
   Repli : commit manuel avec un message Conventional Commits.
+
+## Docus : ce qui casse ou qui surprend
+
+- **Un `seo.description` contenant ` : ` casse le prerender** (voir
+  `errors.md` §8). Toujours **guillemeter** les valeurs de frontmatter qui
+  contiennent un deux-points suivi d'une espace.
+- **Docus rend le `title` du frontmatter en `<h1>`** : ne pas mettre `# Titre`
+  en tête du corps Markdown, sinon **double H1** (mauvais pour le SEO). Vérifier
+  avec `document.querySelectorAll('h1').length` — doit valoir 1.
+- **Les titres de section de la sidebar viennent du nom de dossier**
+  (`2.fonctionnalites` → « Fonctionnalites »), donc **sans accent ni casse
+  voulue**. Il faut un fichier **`.navigation.yml`** dans le dossier :
+
+  ```yaml
+  title: Fonctionnalités
+  ```
+
+  Ces fichiers sont faciles à supprimer par mégarde quand on recrée une section.
+- **Le logo et le suffixe des `<title>`** viennent de `site.name` (nuxt.config) et
+  de `appConfig.header.title` (`app.config.ts`). Sans réglage, `site.name` vaut le
+  nom du `package.json` → le logo affiche « kwiktalk-docs ». Docus **append**
+  ` - {site.name}` à chaque `seo.title` : ne pas y remettre le nom du produit,
+  sinon « Instances WhatsApp — KwikTalk - KwikTalk Docs ».
+- **`ogImage` doit rester désactivé** tant que Google Fonts est injoignable depuis
+  Node (voir `errors.md` §10).
+- **Vérifier tous les liens internes après une restructuration** : le prerender
+  les attrape (`Linked from ...`), mais un lien cassé fait un trou silencieux.
+  Contrôle statique rapide : comparer les liens `](/fr/…)` des fichiers aux
+  routes dérivées des chemins (préfixes numériques `1.` retirés).
+
+## Portée de la documentation
+
+- La doc couvre **les pages publiques + le rôle `user`**, pas l'administration.
+- La protection se fait par **permission** (`permission:manage …`), pas par rôle.
+  `/admin/*` est **l'espace utilisateur** (malgré le préfixe), `admin-panel/*` est
+  la vue transverse **super-admin**.
+- Les permissions du rôle `user` : `view dashboard`, `manage whatsapp instances`,
+  `manage contacts`, `manage message templates`, `send messages`,
+  `manage messages`, `send message campaigns`, `manage message campaigns`,
+  `view incoming messages`, `manage incoming messages`, `manage api applications`,
+  `manage chatbot`, `manage webhooks`.
+- **Ne pas s'appuyer sur `docs/` du dépôt Laravel** (`kwiktalk-inertiajs`) : cette
+  documentation est obsolète et sera retirée. La source de vérité est **le code**.
