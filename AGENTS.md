@@ -53,7 +53,7 @@ en inventer — voir [`.ai-memory/tests.md`](.ai-memory/tests.md).
 
 ## Contenu
 
-- Tout le contenu vit dans `content/{fr,en}/`, **36 pages** (18 par locale).
+- Tout le contenu vit dans `content/{fr,en}/`, **42 pages** (21 par locale).
 - **Les sections portent des noms différents d'une locale à l'autre** (URLs
   traduites) : FR `1.pour-demarrer`, `2.fonctionnalites`, `3.integrations`,
   `4.mon-compte`, `5.ressources` · EN `1.overview`, `2.features`,

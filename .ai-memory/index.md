@@ -57,9 +57,9 @@ Tout le reste du fichier est secondaire face à cette règle.
 ## État de la documentation
 
 Réécrite le 11/10/2026 à partir du **code réel** (`kwiktalk-inertiajs`), en bilingue,
-et **déployée en production** (image `v8`).
+et **déployée en production** (image `v10`).
 
-- **36 pages** : 18 FR + 18 EN, réparties en 5 sections.
+- **42 pages** : 21 FR + 21 EN, réparties en 5 sections.
 - **Portée** : pages publiques + rôle `user` — jamais l'administration.
 - **Images** : générées avec `codesnap` (`--disable-watermark`), dans `public/images/`.
 - **Section FR** : `1.pour-demarrer`, `2.fonctionnalites`, `3.integrations`,
@@ -83,7 +83,7 @@ docker push devmaster2023/kwiktalk-docs:vN
 
 ```bash
 grep -cE '\[500\]|\[404\]' build.log   # doit être 0
-find .output/public -name '*.html' | wc -l  # doit être 36
+find .output/public -name '*.html' | wc -l  # doit être 42
 grep -rnE "^ +[a-z_]+: [^\"].*: " content/   # doit être vide (YAML valide)
 ```
 
@@ -93,8 +93,8 @@ grep -rnE "^ +[a-z_]+: [^\"].*: " content/   # doit être vide (YAML valide)
   *peer dependency obligatoire* de Docus (`12.x`, non optionnel) utilisé par la
   base SQLite de contenu **au build**. Il n'est pas dans `.output/` (inutile au
   runtime), donc retirer `@nuxt/content` du `package.json` casserait le build.
-- Les images OG de partage sont **désactivées** tant que Google Fonts est
-  injoignable depuis Node — à réactiver si le réseau le permet.
-- La doc ne couvre pas encore : la page `/ressources/blog`, `/securite`,
-  `/confidentialite`, `/cgu` et `/statut` du site produit (pages publiques du
-  Laravel, à documenter si besoin).
+- **Les images OG sont générées mais pas servies** : Nitro sert du SSR pour les
+  routes i18n, donc `og:image` n'apparaît pas dans la réponse. Voir
+  [`gotchas.md`](gotchas.md) section « Prerender ≠ fichier servi ».
+- Non documentés (à voir si besoin) : `/ressources/blog`, `/confidentialite`,
+  `/cgu` et `/contact` — légaux ou marketing, pas des fonctionnalités.
