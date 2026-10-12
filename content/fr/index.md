@@ -15,7 +15,7 @@ Tout ce qu'il faut pour connecter votre numéro, importer vos contacts et envoye
   ---
   color: neutral
   size: xl
-  to: /fr/pour-demarrer/premiers-pas
+  to: /fr/overview/first-steps
   trailing-icon: i-lucide-arrow-right
   ---
   Premiers pas
@@ -26,7 +26,7 @@ Tout ce qu'il faut pour connecter votre numéro, importer vos contacts et envoye
   color: neutral
   icon: i-lucide-credit-card
   size: xl
-  to: /fr/pour-demarrer/tarifs
+  to: /fr/overview/pricing
   variant: outline
   ---
   Tarifs
@@ -48,29 +48,29 @@ L'administration de la plateforme (utilisateurs, rôles, plans, facturation inte
 
 | Étape | Page |
 |---|---|
-| Comprendre l'offre | [Présentation](/fr/pour-demarrer/presentation) |
-| Créer un compte | [Créer un compte](/fr/pour-demarrer/creer-un-compte) |
-| Connecter WhatsApp | [Premiers pas](/fr/pour-demarrer/premiers-pas) |
-| Choisir un plan | [Tarifs](/fr/pour-demarrer/tarifs) |
+| Comprendre l'offre | [Présentation](/fr/overview/overview) |
+| Créer un compte | [Créer un compte](/fr/overview/create-account) |
+| Connecter WhatsApp | [Premiers pas](/fr/overview/first-steps) |
+| Choisir un plan | [Tarifs](/fr/overview/pricing) |
 
 ## Les fonctionnalités principales
 
-- **[Instances WhatsApp](/fr/fonctionnalites/instances-whatsapp)** — connectez un ou plusieurs numéros via QR code, surveillez leur état.
-- **[Contacts et groupes](/fr/fonctionnalites/contacts-et-groupes)** — importez un fichier Excel, validez les numéros, organisez-les en groupes.
-- **[Modèles de messages](/fr/fonctionnalites/modeles-de-messages)** — réutilisez des messages avec variables dynamiques.
-- **[Campagnes](/fr/fonctionnalites/messages-et-campagnes)** — envoyez en différé ou en lot, avec planification et protections anti-ban.
-- **[Messages entrants](/fr/fonctionnalites/messages-entrants)** — centralisez les réponses de vos destinataires.
-- **[Chatbot](/fr/fonctionnalites/chatbot)** — automatisez les réponses par règles ou par workflow.
+- **[Instances WhatsApp](/fr/features/whatsapp-instances)** — connectez un ou plusieurs numéros via QR code, surveillez leur état.
+- **[Contacts et groupes](/fr/features/contacts-groups)** — importez un fichier Excel, validez les numéros, organisez-les en groupes.
+- **[Modèles de messages](/fr/features/message-templates)** — réutilisez des messages avec variables dynamiques.
+- **[Campagnes](/fr/features/messages-campaigns)** — envoyez en différé ou en lot, avec planification et protections anti-ban.
+- **[Messages entrants](/fr/features/incoming-messages)** — centralisez les réponses de vos destinataires.
+- **[Chatbot](/fr/features/chatbot)** — automatisez les réponses par règles ou par workflow.
 
 ## Pour les développeurs
 
-- **[Applications API](/fr/integrations/applications-api)** — créez une clé, apparez-la à une instance, envoiez par `POST /api/v1/messages/send`.
+- **[Applications API](/fr/integrations/api-applications)** — créez une clé, apparez-la à une instance, envoiez par `POST /api/v1/messages/send`.
 - **[Webhooks](/fr/integrations/webhooks)** — recevez `message.received`, `message.status.updated`, `instance.connected`… avec signature HMAC-SHA256.
 
 ## Aide et confiance
 
-- **[Formatteur WhatsApp](/fr/ressources/formatteur-whatsapp)** — outil gratuit pour rédiger et copier un message au format WhatsApp.
-- **[Anti-spam et anti-ban](/fr/ressources/anti-spam)** — les trois modes de protection et les bonnes pratiques d'envoi.
-- **[FAQ](/fr/ressources/faq)** — validation des numéros, sécurité, multi-numéros, essai gratuit.
-- **[Sécurité](/fr/ressources/securite)** — chiffrement, clés API, contrôle des accès, bonnes pratiques.
-- **[Statut de la plateforme](/fr/ressources/statut)** — disponibilité en temps réel et maintenances.
+- **[Formatteur WhatsApp](/fr/resources/whatsapp-formatter)** — outil gratuit pour rédiger et copier un message au format WhatsApp.
+- **[Anti-spam et anti-ban](/fr/resources/anti-spam)** — les trois modes de protection et les bonnes pratiques d'envoi.
+- **[FAQ](/fr/resources/faq)** — validation des numéros, sécurité, multi-numéros, essai gratuit.
+- **[Sécurité](/fr/resources/security)** — chiffrement, clés API, contrôle des accès, bonnes pratiques.
+- **[Statut de la plateforme](/fr/resources/status)** — disponibilité en temps réel et maintenances.
