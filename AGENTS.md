@@ -54,14 +54,18 @@ en inventer — voir [`.ai-memory/tests.md`](.ai-memory/tests.md).
 ## Contenu
 
 - Tout le contenu vit dans `content/{fr,en}/`, **42 pages** (21 par locale).
-- **Les sections portent des noms différents d'une locale à l'autre** (URLs
-  traduites) : FR `1.pour-demarrer`, `2.fonctionnalites`, `3.integrations`,
-  `4.mon-compte`, `5.ressources` · EN `1.overview`, `2.features`,
-  `3.integrations`, `4.account`, `5.resources`.
+- **Les deux locales partagent exactement les mêmes chemins** : sections
+  `1.overview`, `2.features`, `3.integrations`, `4.account`, `5.resources`, et des
+  fichiers identiques. Slugs **anglais dans les deux cas**, traduction portée par
+  `title:` et `.navigation.yml`.
+  ⚠️ Obligatoire : `nuxt-i18n` ne traduit que le **préfixe de locale**, un slug
+  divergent donne un **404 au clic sur le sélecteur de langue** (16 pages/21 avant
+  correction). Toute page ajoutée doit exister **aux deux mêmes chemins**.
 - **Les fichiers sont numérotés** : le préfixe `1.` d'un dossier est réservé à son
   `index.md`, les pages commencent à `2.`. Le préfixe n'apparaît pas dans l'URL.
 - Chaque dossier de section contient un **`.navigation.yml`** (`title:`) : sans lui,
-  la sidebar affiche le nom de dossier brut (« Fonctionnalites », sans accent).
+  la sidebar affiche le nom de dossier brut — d'où les titres français séparés
+  (« Pour démarrer », « Fonctionnalités », « Mon compte »…).
 - Un dossier **sans `index.md` renvoie un 404** sur son URL racine.
 - Les deux locales doivent rester **synchronisées** : toute page ajoutée en `fr`
   doit l'être en `en`, et inversement.

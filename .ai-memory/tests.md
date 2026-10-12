@@ -132,8 +132,27 @@ agent-browser close
 ```
 
 Points de contrôle visuels : logo « KwikTalk » (pas « kwiktalk-docs »), titres de
-section accentués, un seul H1, images `public/images/` affichées, bascule de
-langue fonctionnelle.
+section accentués, un seul H1, images `public/images/` affichées, `og:image`
+présent, **bascule de langue sur les 21 pages dans les deux sens**, aucune erreur
+console, recherche `Ctrl+K` qui retourne des résultats.
+
+### Bascule de langue — test obligatoire
+
+Le sélecteur 🇫🇷/🇬🇧 ne fait que changer le **préfixe de locale** : si un chemin
+FR n'existe pas EN (slug divergent), la page est **404**. À refaire après chaque
+ajout de page.
+
+```bash
+# pour chaque page FR : ouvrir, cliquer le sélecteur, cliquer « English »,
+# vérifier que location.pathname === chemin attendu ET qu'un h1 existe
+# (h1 vide ou « Page not found » = KO)
+```
+
+Attendu : **21/21 dans chaque sens**.
+
+⚠️ Piège de test : `agent-browser eval` renvoie du JSON **échappé** (`\"`) —
+extraire les valeurs avec `tr -d '"'` ou lire `location.pathname` en texte brut,
+sinon on compte des faux KO.
 
 **Hygiène** : toujours un nom de session propre (`AGENT_BROWSER_SESSION`), et
 `agent-browser close` en fin de tâche.

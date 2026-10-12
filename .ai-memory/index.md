@@ -51,8 +51,10 @@ Tout le reste du fichier est secondaire face à cette règle.
    build. Voir `errors.md` §8.
 6. **Cache `node_modules/.cache` périmé** → `no such table: _content_docs_en`,
    toute la locale EN en 404. Voir `errors.md` §9.
-7. **Google Fonts injoignable depuis Node** → `ogImage` désactivé. Voir
-   `errors.md` §10.
+7. **Google Fonts injoignable depuis Node** → simple warning, les images OG
+   fonctionnent. Ne pas désactiver `ogImage`. Voir `errors.md` §10.
+8. **Slugs différents entre FR et EN** → la bascule de langue renvoie 404 sur
+   16 pages sur 21. Slugs identiques dans les deux locales. Voir `gotchas.md`.
 
 ## État de la documentation
 
@@ -62,10 +64,10 @@ et **déployée en production** (image `v10`).
 - **42 pages** : 21 FR + 21 EN, réparties en 5 sections.
 - **Portée** : pages publiques + rôle `user` — jamais l'administration.
 - **Images** : générées avec `codesnap` (`--disable-watermark`), dans `public/images/`.
-- **Section FR** : `1.pour-demarrer`, `2.fonctionnalites`, `3.integrations`,
-  `4.mon-compte`, `5.ressources`.
-- **Section EN** : `1.overview`, `2.features`, `3.integrations`, `4.account`,
-  `5.resources` — noms de dossiers **volontairement différents** (URLs traduites).
+- **Sections (identiques dans les deux locales, slugs anglais)** :
+  `1.overview`, `2.features`, `3.integrations`, `4.account`, `5.resources` —
+  indispensable au sélecteur de langue. Seuls les `title:` / `.navigation.yml`
+  diffèrent (« Pour démarrer », « Fonctionnalités »…).
 - Branding : logo « KwikTalk », suffixe de titre « KwikTalk Docs ».
 
 ### Procédure de mise à jour

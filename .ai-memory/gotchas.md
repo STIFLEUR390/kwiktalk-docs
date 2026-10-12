@@ -156,3 +156,32 @@ curl -s localhost:PORT/fr | grep -c og:image   # attendu : 1
 **Symptôme inverse à ne pas confondre** : si `og:image` est absent, vérifier
 d'abord que le fichier existe (`find .output/public -name index.html`), puis que
 la réponse servie n'est pas du SSR.
+
+## i18n : les slugs doivent être identiques entre locales
+
+**Piège lourd** : `nuxt-i18n` construit la cible du sélecteur de langue en
+**changeant uniquement le préfixe de locale** (`switchLocalePath`). Avec des slugs
+traduits (`/fr/fonctionnalites/chatbot` → `/en/fonctionnalities/chatbot`), la page
+cible **n'existe pas** → **404 silencieux**.
+
+Constat initial : **16 pages sur 21** renvoyaient 404 après un clic sur 🇫🇷/🇬🇧.
+Seules celles dont le slug était déjà identique passaient (`webhooks`, `chatbot`,
+`notifications`, `faq`, `anti-spam`).
+
+**Règle appliquée** : les **deux locales partagent exactement les mêmes chemins** ;
+seul le contenu et les titres diffèrent. Slugs en anglais dans les deux cas
+(`defaultLocale: 'en'`), traduction assurée par les fichiers `title:` /
+`.navigation.yml`.
+
+- `content/fr/` et `content/en/` doivent avoir **la même structure relative** —
+  contrôle rapide : comparer les deux listes de chemins relatifs.
+- Après tout ajout de page, vérifier que **les deux locales ont le même chemin** :
+  une page ajoutée seulement en FR avec un slug traduit casserait la bascule.
+
+**Test obligatoire** (agent-browser) : pour chaque page, cliquer le sélecteur de
+langue et vérifier que le chemin cible existe. 404 = slug divergent.
+
+```bash
+# contrôle statique : chaque /fr/X a un /en/X
+python3 -c "...comparer les chemins relatifs FR et EN..."
+```
