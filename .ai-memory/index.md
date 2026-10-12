@@ -93,8 +93,8 @@ grep -rnE "^ +[a-z_]+: [^\"].*: " content/   # doit être vide (YAML valide)
   *peer dependency obligatoire* de Docus (`12.x`, non optionnel) utilisé par la
   base SQLite de contenu **au build**. Il n'est pas dans `.output/` (inutile au
   runtime), donc retirer `@nuxt/content` du `package.json` casserait le build.
-- **Les images OG sont générées mais pas servies** : Nitro sert du SSR pour les
-  routes i18n, donc `og:image` n'apparaît pas dans la réponse. Voir
-  [`gotchas.md`](gotchas.md) section « Prerender ≠ fichier servi ».
+- **Images OG servies** sur les 42 pages — a nécessité `nitro.prerender
+  .autoSubfolderIndex: true` (sans quoi Nitro ne trouvait pas le fichier et
+  retombait en SSR). Voir [`gotchas.md`](gotchas.md) section « Prerender ».
 - Non documentés (à voir si besoin) : `/ressources/blog`, `/confidentialite`,
   `/cgu` et `/contact` — légaux ou marketing, pas des fonctionnalités.

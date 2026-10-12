@@ -123,27 +123,36 @@ kill "$DPID"
 - **Ne pas s'appuyer sur `docs/` du dépôt Laravel** (`kwiktalk-inertiajs`) : cette
   documentation est obsolète et sera retirée. La source de vérité est **le code**.
 
-## Prerender ≠ fichier servi (important)
+## Prerender : le fichier doit être servable (`autoSubfolderIndex`)
 
-Le prerender **écrit** `.output/public/fr.html` (avec `og:image`, `twitter:image`),
-mais Nitro **sert du SSR** pour `/fr` — réponse plus longue et **sans** les balises
-OG. Le fichier statique n'est accessible que sur son URL exacte :
+**Piège silencieux** : le prerender écrit bien `.output/public/fr.html` avec
+`og:image`/`twitter:image`, mais **Nitro ne résout pas `/fr` → `fr.html`** : il
+cherche `fr/index.html`. Résultat, la route tombait en **SSR** — réponse plus
+longue et **sans les balises OG**, alors que le fichier existait.
 
-```bash
-curl /fr        # SSR  (~80 ko, sans og:image)
-curl /fr.html   # statique (~70 ko, avec og:image)
+Le défaut de Nuxt/Docus produit `x.html` (`autoSubfolderIndex: false`), alors que
+la doc Nitro indique `true` par défaut :
+
+```
+autoSubfolderIndex: true   → /about → .output/public/about/index.html   (served)
+autoSubfolderIndex: false  → /about → .output/public/about.html          (SSR wins)
 ```
 
-Conséquences :
+**Fix appliqué** dans `nuxt.config.ts` :
 
-- **Le SEO reste bon** : le SSR rend le HTML complet, Google ne voit pas la
-  différence.
-- **Les images OG ne sont donc pas servies** partout où ça compterait (robots de
-  partage social). `ogImage: { enabled: true }` produit les 42 images et les
-  balises dans le HTML prérendu, mais la route SSR les omet.
-- **Vérifier sur la réponse servie**, pas sur le fichier de `.output/public/` :
-  comparer les tailles est le test le plus rapide
-  (`wc -c` du fichier vs `curl … | wc -c`).
+```ts
+nitro: { prerender: { autoSubfolderIndex: true } }
+```
 
-À creuser si le partage social devient un besoin : comprendre pourquoi la route
-i18n `[[lang]]` l'emporte sur le handler statique de Nitro.
+**Pour vérifier** — comparer la taille servie avec celle du fichier statique, et
+compter les OG :
+
+```bash
+curl -s localhost:PORT/fr | wc -c
+wc -c < .output/public/fr/index.html     # doit être égal
+curl -s localhost:PORT/fr | grep -c og:image   # attendu : 1
+```
+
+**Symptôme inverse à ne pas confondre** : si `og:image` est absent, vérifier
+d'abord que le fichier existe (`find .output/public -name index.html`), puis que
+la réponse servie n'est pas du SSR.
