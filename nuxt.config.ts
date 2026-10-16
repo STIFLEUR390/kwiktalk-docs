@@ -13,9 +13,12 @@ export default defineNuxtConfig({
     }],
   },
 
-  // Nom affiché dans le suffixe des <title> et en alternative du logo
+  // Nom affiché dans le suffixe des <title> et en alternative du logo.
+  // `url` est obligatoire pour le prerender statique : sans elle, le module
+  // sitemap throw au build ("You must provide a site URL to prerender a sitemap").
   site: {
     name: 'KwikTalk Docs',
+    url: 'https://kwiktalk-docs.applix.fr',
   },
 
   // Note : le build tente de joindre fonts.google.com depuis Node (injoignable

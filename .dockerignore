@@ -1,0 +1,11 @@
+.git
+node_modules
+.output
+.nuxt
+.nitro
+.data
+.cache
+.ai-memory
+Dockerfile
+.dockerignore
+*.log

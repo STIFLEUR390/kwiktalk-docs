@@ -1,39 +1,39 @@
 # syntax=docker/dockerfile:1
-
-# Image pré-buildée : le build Nuxt/Docus est trop gourmand en RAM pour le VPS
-# (le prerender dépasse les 2 Go et met le swap en PLS, ce qui fait "pendre" le
-# build Dokploy). On build en local, on pousse sur Docker Hub, Dokploy pull.
 #
-#   docker build --pull=false --provenance=false --sbom=false -t devmaster2023/kwiktalk-docs:vN .
-#   docker push devmaster2023/kwiktalk-docs:vN
+# Docs Nuxt/Docus en statique, même pattern que le Dockerfile Astro :
+# build avec bun (NITRO_PRESET=static → .output/public), runtime nginx.
 #
-# Le push Docker Hub est instable depuis ce réseau : un upload long d'une seule
-# couche se fait couper. D'où le scindage en couches courtes ci-dessous.
+# ⚠ Build LOCAL uniquement (trop gourmand en RAM pour le VPS) :
+#   docker build --pull=false --provenance=false --sbom=false \
+#     -t devmaster2023/kwiktalk-docs:vN -f Dockerfile .
+#
+# Image finale ~35 Mo (nginx + 13 Mo de statique) : le push Docker Hub
+# tient désormais en une couche courte — pas besoin de split-layer.
 
-# Stage "trim" : on élimine les binaires inutiles AVANT la couche finale,
-# sinon ils restent dans l'historique des couches et l'image ne rétrécit pas.
-FROM node:22-alpine AS trim
+FROM oven/bun:1 AS build
 WORKDIR /app
-COPY .output ./.output
-# Alpine = musl : les binaires sharp glibc (~18 Mo) ne servent à rien ici
-RUN rm -rf /app/.output/server/node_modules/@img/sharp-libvips-linux-x64 \
-           /app/.output/server/node_modules/@img/sharp-linux-x64
 
-FROM node:22-alpine
-WORKDIR /app
-ENV NODE_ENV=production
-ENV NITRO_PRESET=node-server
-ENV PORT=3000
+# Toolchain de secours : better-sqlite3 (peer dep de Docus) tombe sur
+# node-gyp si prebuild-install n'a pas de prébuild pour la plateforme.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 make g++ \
+    && rm -rf /var/lib/apt/lists/*
 
-# .output scindé en couches sans recouvrement, chacune < 20 Mo.
-COPY --from=trim /app/.output/server/node_modules/@img ./.output/server/node_modules/@img
-COPY --from=trim /app/.output/server/node_modules/@sqlite.org ./.output/server/node_modules/@sqlite.org
-COPY --from=trim /app/.output/server/node_modules/@shikijs ./.output/server/node_modules/@shikijs
-COPY --from=trim --exclude=@img --exclude=@sqlite.org --exclude=@shikijs /app/.output/server/node_modules ./.output/server/node_modules
-COPY --from=trim /app/.output/server/chunks ./.output/server/chunks
-COPY --from=trim /app/.output/server/index.mjs /app/.output/server/index.mjs.map /app/.output/server/package.json ./.output/server/
-COPY --from=trim /app/.output/public ./.output/public
-COPY --from=trim /app/.output/nitro.json ./.output/nitro.json
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
+COPY . .
+
+# Static : tout est prerendered dans .output/public (189 routes),
+# servi par nginx ci-dessous. `site.url` doit être défini dans
+# nuxt.config sinon le prerender du sitemap échoue au build.
+ENV NITRO_PRESET=static
+ENV NODE_OPTIONS="--max-old-space-size=1536"
+RUN bun run build
+
+FROM nginx:alpine AS runtime
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/.output/public /usr/share/nginx/html
+
+# Port attendu par le routeur Traefik de Dokploy (voir docker/nginx.conf)
 EXPOSE 3000
-CMD ["node", ".output/server/index.mjs"]
