@@ -209,11 +209,15 @@ conteneur ne se ferme pas et la page casse au prerender.
 
 ## Dokploy doit **tirer** l'image, jamais builder le repo
 
-Le provider de l'app `newkwiktalk-docs-b7euo7` doit être en **Docker (image
-préconstruite)** : `devmaster2023/kwiktalk-docs:vN`. En mode Nixpacks/Dockerfile,
-le log de déploiement commence par `Cloning Repo … to
-/etc/dokploy/applications/<app>/code` puis lance un build **sur le VPS** → hit RAM
-(`errors.md` §1), build `running` à l'infini.
+Réglage : app `newkwiktalk-docs-b7euo7` → onglet **General** → **Source = Docker**
+(pas GitHub/Git), champ **Docker Image** = `devmaster2023/kwiktalk-docs:vN`,
+Registry URL vide (Docker Hub), user/password vides (image publique). Puis Deploy.
+
+Les types de build Dokploy (Nixpacks, Railpack, Dockerfile, Buildpack, Static) ne
+s'appliquent **qu'aux sources Git** : il n'existe pas de build type « image ».
+Rester en source Git = `Cloning Repo … to /etc/dokploy/applications/<app>/code`
+dans le log, puis build **sur le VPS** → hit RAM (`errors.md` §1), build `running`
+à l'infini.
 
 Depuis le passage à nginx, un build Dockerfile depuis le repo échoue de toute façon
 en quelques secondes : `.output/` est dans `.gitignore`, donc `COPY .output/public`
