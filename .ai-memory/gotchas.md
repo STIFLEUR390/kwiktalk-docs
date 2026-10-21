@@ -206,3 +206,27 @@ Les deux index doivent être enveloppés :
 Conséquence de l'imbrication MDC : les composants **à l'intérieur** du conteneur
 prennent **un `:` de plus** (`::note` → `:::note`, fermeture `:::`), sinon le
 conteneur ne se ferme pas et la page casse au prerender.
+
+## Dokploy doit **tirer** l'image, jamais builder le repo
+
+Le provider de l'app `newkwiktalk-docs-b7euo7` doit être en **Docker (image
+préconstruite)** : `devmaster2023/kwiktalk-docs:vN`. En mode Nixpacks/Dockerfile,
+le log de déploiement commence par `Cloning Repo … to
+/etc/dokploy/applications/<app>/code` puis lance un build **sur le VPS** → hit RAM
+(`errors.md` §1), build `running` à l'infini.
+
+Depuis le passage à nginx, un build Dockerfile depuis le repo échoue de toute façon
+en quelques secondes : `.output/` est dans `.gitignore`, donc `COPY .output/public`
+ne trouve rien. **Un log qui commence par « Cloning Repo » = mauvaise config côté
+Dokploy**, pas un bug du code.
+
+## Digest : podman ne renvoie pas celui de Docker Hub
+
+`docker push` (podman) pousse un **index OCI** : le `Digest` local ne correspondra
+jamais au digest que Docker Hub affiche, même quand l'image est bonne. Comparer
+plutôt l'**id de config** :
+
+```bash
+docker pull docker.io/devmaster2023/kwiktalk-docs:vN
+# l'id affiché doit être celui du build local (docker inspect --format '{{.Id}}')
+```
