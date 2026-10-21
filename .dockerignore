@@ -1,11 +1,13 @@
+# Le contexte n'a besoin que de `.output/public` et `docker/nginx.conf`
+# (le site est déjà prerendered en local).
 .git
 node_modules
-.output
 .nuxt
 .nitro
 .data
 .cache
 .ai-memory
-Dockerfile
-.dockerignore
+content
+app
+public
 *.log

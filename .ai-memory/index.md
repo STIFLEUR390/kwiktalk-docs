@@ -44,8 +44,8 @@ Tout le reste du fichier est secondaire face à cette règle.
 1. **Build Dokploy qui pend 1h** → RAM insuffisante, pas un bug. Voir `errors.md`.
 2. **`:latest` Docker Hub périmé** → une image Next.js d'un ancien projet traîne et
    sert un contenu faux. Toujours tagger en `vN`.
-3. **Push Docker Hub coupé** → upload long d'une seule couche. Couches scindées
-   dans le `Dockerfile`.
+3. **Push Docker Hub coupé** → upload long d'une seule couche. Obsolète : l'image
+   nginx actuelle n'a qu'une couche de 13 Mo (`errors.md` §4).
 4. **`memoryLimit: "3gb"` rejeté** par Dokploy → laisser `null`.
 5. **`seo.description` avec ` : ` non quoté** → prerender en 500, page absente du
    build. Voir `errors.md` §8.
@@ -85,7 +85,7 @@ docker push devmaster2023/kwiktalk-docs:vN
 
 ```bash
 grep -cE '\[500\]|\[404\]' build.log   # doit être 0
-find .output/public -name '*.html' | wc -l  # doit être 42
+find .output/public -name '*.html' | wc -l  # doit être 45 (42 pages + 3 fallbacks)
 grep -rnE "^ +[a-z_]+: [^\"].*: " content/   # doit être vide (YAML valide)
 ```
 

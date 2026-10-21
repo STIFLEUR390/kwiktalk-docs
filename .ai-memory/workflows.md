@@ -11,8 +11,8 @@ la RAM disponible et le build reste `running` sans fin (`errors.md` §1).
 npm run build
 ```
 
-Produit `.output/` (~70 Mo). Environ 1-2 min. Vérifier que `.output/public/` contient
-les pages attendues :
+Produit `.output/public` (~13 Mo, 45 fichiers HTML). Environ 1-2 min. Vérifier que
+`.output/public/` contient les pages attendues :
 
 ```bash
 find .output/public/fr -name "*.html" | sed 's|.*/public||'
@@ -30,15 +30,19 @@ périmée d'un ancien projet traîne sur ce compte, `errors.md` §2).
 
 ### 3. Vérifier avant de pousser
 
+L'image ne fait que copier `.output/public` : si le `docker build` échoue sur le
+`COPY`, c'est que le build local n'a pas été lancé.
+
 ```bash
-# le Cmd doit être [node .output/server/index.mjs], le User vide
-docker inspect devmaster2023/kwiktalk-docs:vN --format '{{.Config.Cmd}} | {{.Config.User}}'
+# l'image est nginx, pas un node-server
+docker inspect devmaster2023/kwiktalk-docs:vN --format '{{.Config.Cmd}}'
+# attendu : nginx -g daemon off;
 
 # test de fumée local
 docker run -d --name kwik-test -p 3999:3000 devmaster2023/kwiktalk-docs:vN
 sleep 8
 curl -s -o /dev/null -w "/fr -> %{http_code}\n" http://localhost:3999/fr    # 200
-curl -s -o /dev/null -w "/en -> %{http_code}\n" http://localhost:3998/en    # 200
+curl -s -o /dev/null -w "/en -> %{http_code}\n" http://localhost:3999/en    # 200
 docker rm -f kwik-test
 ```
 
@@ -50,10 +54,10 @@ docker rm -f kwik-test
 docker push devmaster2023/kwiktalk-docs:vN
 ```
 
-**Compter ~20-30 min** si le réseau est dégradé. Le transfert est lent mais, avec les
-couches scindées, il passe normalement **du premier coup**. Si ça échoue malgré tout,
-c'est que les couches sont trop grosses : revoir le `Dockerfile`
-(`errors.md` §4).
+**Compter quelques minutes** : ~83 Mo, dont 52 Mo de base `nginx:alpine` (déjà en
+cache sur Docker Hub) et 13 Mo de statique. Si le push casse, c'est le réseau, pas
+la taille : voir `errors.md` §4 (qui ne concerne plus que l'ancienne image
+de 700 Mo).
 
 Pour relancer sans risquer de tuer sa propre shell, ne pas utiliser `pkill -f` :
 

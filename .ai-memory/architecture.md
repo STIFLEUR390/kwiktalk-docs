@@ -3,14 +3,14 @@
 ## Stack
 
 **Docus** — thème de documentation posé sur **Nuxt 4** avec `@nuxt/content`.
-Le contenu est du Markdown, le rendu se fait à la volée (SSR Nitro) + prérendu des
-routes au build.
+Le contenu est du Markdown. Tout est **prerendered au build** (`NITRO_PRESET=static`) :
+un HTML par route dans `.output/public`, aucun SSR à l'exécution.
 
 ```
 content/{fr,en}/     Markdown, source unique du contenu
 public/              favicon.ico, mountains.webp
 nuxt.config.ts       extends: ['docus'] + module i18n
-Dockerfile           multi-stage : trim → image finale scindée en couches
+Dockerfile           nginx:alpine + COPIE de .output/public (aucun runtime Node)
 nixpacks.toml        OBSOLÈTE (le build ne se fait plus sur le VPS), conservé
                      comme trace de la limite mémoire du VPS
 ```
@@ -36,41 +36,37 @@ site affiché dans le `<title>` suffixe vient de Docus, pas de ce fichier.
 ```
 LOCAL (RAM dispo)                      VPS Dokploy (RAM faible)
 ──────────────────                     ────────────────────────
-npm run build  →  .output/             docker pull  devmaster2023/kwiktalk-docs:vN
+npm run build  →  .output/public       docker pull  devmaster2023/kwiktalk-docs:vN
 docker build   →  image vN             docker run   →  port 3000
 docker push    →  Docker Hub          Traefik      →  kwiktalk-docs.applix.fr
 ```
 
 Le VPS ne compile **jamais** rien. Il ne fait que tirer une image déjà construite.
 
-### Le `Dockerfile` en deux stages
+### Le `Dockerfile` : nginx + statique, rien d'autre
 
-1. **`trim`** : copie `.output/` et supprime les binaires sharp **glibc**
-   (`sharp-libvips-linux-x64`, `sharp-linux-x64`, ~18 Mo). Inutiles sur Alpine qui
-   est en **musl**. Ce nettoyage doit se faire dans un stage séparé, sinon les
-   fichiers restent dans l'historique des couches et l'image ne rétrécit pas.
-2. **Image finale** : recopie `.output/` **en couches séparées, sans recouvrement**,
-   chacune < 20 Mo.
-
-### Pourquoi les couches sont scindées
-
-Le réseau vers `registry-1.docker.io` est instable : un upload continu de > 30 s est
-interrompu (`use of closed network connection`). En scindant `.output` en morceaux
-de < 20 Mo, chaque upload est court et résiste. **Regrouper les `COPY` ferait
-échouer le push.**
-
-Ordre des couches (du plus gros au plus petit, toutes < 20 Mo) :
-
+```dockerfile
+FROM nginx:alpine
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY .output/public /usr/share/nginx/html
+EXPOSE 3000
 ```
-@img            19.3 Mo   binaires sharp musl
-node_modules    19.4 Mo   @img/@sqlite.org/@shikijs exclus (déjà copiés)
-public           8.3 Mo   assets statiques
-chunks           4.5 Mo   bundles serveur
-@sqlite.org      1.4 Mo   sqlite-wasm (utilisé au runtime)
-@shikijs         1.1 Mo   coloration syntaxique
-index.mjs …     16.4 Ko   entrypoint
-nitro.json        4.1 B
-```
+
+Aucun build dans Docker : `.output/public` doit **déjà** exister (`npm run build`),
+sinon le `COPY` échoue franchement. L'image fait ~83 Mo (52 Mo de nginx:alpine
++ 13 Mo de statique), ne contient ni Node ni bun, et se construit en quelques
+secondes au lieu de plusieurs minutes.
+
+**Ne pas passer `ssr: false`** : Nuxt n'écrirait plus qu'une coquille `index.html`
+(22 routes au lieu de 189, 5 HTML au lieu de 45, plus d'`og:image` dans le HTML) et
+les liens profonds tomberaient en 404 avec le `try_files` du `nginx.conf`.
+Le « statique » utile ici, c'est **SSG** (prerender), pas SPA.
+
+### Pourquoi plus de couches scindées
+
+L'ancienne image `node-server` (~700 Mo) devait être scindée en couches de < 20 Mo
+à cause des pushs Docker Hub interrompus. Avec 13 Mo de statique en une seule
+couche, le problème ne se pose plus.
 
 ## Routing
 

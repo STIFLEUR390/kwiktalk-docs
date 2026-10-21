@@ -100,6 +100,10 @@ docker history devmaster2023/kwiktalk-docs:vN --human --format "{{.Size}}\t{{.Cr
 sans recouvrement entre elles. Chaque upload devient court et passe. Le push passe
 alors **du premier coup**.
 
+> ⚠️ **Obsolète pour l'image actuelle** : elle sert `.output/public` avec nginx
+> (~83 Mo au total, 13 Mo de statique en **une seule** couche). Le scindage ne
+> concernait que l'ancienne image `node-server` de ~700 Mo. Gardé ici comme trace.
+
 Attention, deux pièges de scindage :
 - Un `COPY` de `server/` après `node_modules/` **recopie** les fichiers en delta →
   duplication. Copier les fichiers un par un, jamais le dossier parent.

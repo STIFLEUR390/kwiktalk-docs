@@ -31,9 +31,10 @@ docker build --pull=false --provenance=false --sbom=false \
 docker push devmaster2023/kwiktalk-docs:vN
 ```
 
-Le **push Docker Hub est instable** depuis ce réseau : un upload long d'une seule
-couche est coupé. Le `Dockerfile` scinde donc `.output` en couches de < 20 Mo —
-ne pas les regrouper, sinon le push échoue.
+Le **push Docker Hub** a longtemps été instable (uploads longs coupés) : l'image
+`node-server` de ~700 Mo devait être scindée en couches de < 20 Mo. Ce n'est plus le
+cas : l'image actuelle est `nginx:alpine` + `.output/public` (13 Mo de statique en
+une seule couche, ~83 Mo au total), construite en quelques secondes.
 
 ---
 
@@ -111,5 +112,5 @@ que le digest correspond avant de pointer Dokploy dessus :
 
 ```bash
 docker inspect devmaster2023/kwiktalk-docs:vN --format '{{.Config.Cmd}}'
-# attendu : [node .output/server/index.mjs]   (et non "node server.js")
+# attendu : nginx -g daemon off;   (et non "node server.js")
 ```

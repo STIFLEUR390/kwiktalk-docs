@@ -98,8 +98,8 @@ npm run build > /tmp/build.log 2>&1; echo "exit=$?"
 grep -cE '\[500\]|\[404\]' /tmp/build.log        # attendu : 0
 grep -E '\[500\]|\[404\]|Linked from' /tmp/build.log
 
-# 2. toutes les pages générées (42 = 21 FR + 21 EN)
-find .output/public -name '*.html' | wc -l       # attendu : 42
+# 2. toutes les pages générées (45 = 42 pages + index.html, 200.html, 404.html)
+find .output/public -name '*.html' | wc -l       # attendu : 45
 grep -oE 'Prerendered [0-9]+ routes' /tmp/build.log  # attendu : ~137
 
 # 3. aucun frontmatter YAML invalide (virgule+espace non quoté)
