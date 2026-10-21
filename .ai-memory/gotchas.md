@@ -185,3 +185,24 @@ langue et vérifier que le chemin cible existe. 404 = slug divergent.
 # contrôle statique : chaque /fr/X a un /en/X
 python3 -c "...comparer les chemins relatifs FR et EN..."
 ```
+
+## La landing (`content/<locale>/index.md`) n'a aucun conteneur
+
+`/fr` et `/en` ne passent **pas** par le layout `docs` : Docus sert la route
+`/:lang` avec `app/templates/landing.vue`, qui rend le Markdown **brut**, sans
+`UContainer` ni `UPage`. Seul `::u-page-hero` apporte son propre conteneur — tout le
+Markdown qui suit est donc **collé aux bords**, pleine largeur.
+
+Les deux index doivent être enveloppés :
+
+```md
+::u-container{class="py-10"}
+
+## Première section
+...
+::
+```
+
+Conséquence de l'imbrication MDC : les composants **à l'intérieur** du conteneur
+prennent **un `:` de plus** (`::note` → `:::note`, fermeture `:::`), sinon le
+conteneur ne se ferme pas et la page casse au prerender.

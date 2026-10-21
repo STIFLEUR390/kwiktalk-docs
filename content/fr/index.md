@@ -33,6 +33,8 @@ Tout ce qu'il faut pour connecter votre numéro, importer vos contacts et envoye
   :::
 ::
 
+::u-container{class="py-10"}
+
 ## Pour qui est cette documentation ?
 
 Cette documentation couvre **deux périmètres** :
@@ -40,9 +42,9 @@ Cette documentation couvre **deux périmètres** :
 - **Les fonctionnalités publiques** — accessibles sans compte : présentation du produit, tarifs, outils gratuits, pages légales et statut.
 - **Les fonctionnalités du rôle `user`** — l'espace de travail complet d'un compte utilisateur : instances WhatsApp, contacts, modèles, messages, campagnes, messages entrants, chatbot, API et webhooks.
 
-::note{type="info"}
+:::note{type="info"}
 L'administration de la plateforme (utilisateurs, rôles, plans, facturation interne, paramètres globaux) n'est pas documentée ici : ces fonctions relèvent des rôles `admin` et `super-admin`.
-::
+:::
 
 ## Par où commencer
 
@@ -74,3 +76,5 @@ L'administration de la plateforme (utilisateurs, rôles, plans, facturation inte
 - **[FAQ](/fr/resources/faq)** — validation des numéros, sécurité, multi-numéros, essai gratuit.
 - **[Sécurité](/fr/resources/security)** — chiffrement, clés API, contrôle des accès, bonnes pratiques.
 - **[Statut de la plateforme](/fr/resources/status)** — disponibilité en temps réel et maintenances.
+
+::

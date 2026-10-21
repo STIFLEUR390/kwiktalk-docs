@@ -33,6 +33,8 @@ Everything you need to connect your number, import your contacts and send your f
   :::
 ::
 
+::u-container{class="py-10"}
+
 ## Who is this documentation for?
 
 This documentation covers **two scopes**:
@@ -40,9 +42,9 @@ This documentation covers **two scopes**:
 - **Public features** — available without an account: product overview, pricing, free tools, legal pages and status.
 - **`user` role features** — the full workspace of a regular account: WhatsApp instances, contacts, templates, messages, campaigns, incoming messages, chatbot, API and webhooks.
 
-::u-alert{color="info" icon="i-lucide-info"}
+:::u-alert{color="info" icon="i-lucide-info"}
 Platform administration (users, roles, plans, internal billing, global settings) is **not** documented here — those functions belong to the `admin` and `super-admin` roles.
-::
+:::
 
 ## Where to start
 
@@ -74,3 +76,5 @@ Platform administration (users, roles, plans, internal billing, global settings)
 - **[FAQ](/en/resources/faq)** — number validation, security, multiple numbers, free trial.
 - **[Security](/en/resources/security)** — encryption, API keys, access control, best practices.
 - **[Platform status](/en/resources/status)** — real-time availability and maintenance.
+
+::
