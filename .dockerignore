@@ -1,13 +1,13 @@
-# Le contexte n'a besoin que de `.output/public` et `docker/nginx.conf`
-# (le site est déjà prerendered en local).
+# Contexte du build : les sources du site (le prerender tourne dans l'étage
+# `build` du Dockerfile). On exclut uniquement les artefacts et le local.
 .git
 node_modules
+.output
 .nuxt
 .nitro
 .data
 .cache
 .ai-memory
-content
-app
-public
+Dockerfile
+.dockerignore
 *.log

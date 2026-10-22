@@ -2,62 +2,58 @@
 
 ## Déployer une modification
 
-Le seul workflow qui compte. **Ne jamais builder sur le VPS** : le prerender dépasse
-la RAM disponible et le build reste `running` sans fin (`errors.md` §1).
-
-### 1. Build local
-
-```bash
-npm run build
-```
-
-Produit `.output/public` (~13 Mo, 45 fichiers HTML). Environ 1-2 min. Vérifier que
-`.output/public/` contient les pages attendues :
+`Auto Deploy` est actif sur l'app `newkwiktalk-docs-b7euo7` : **un `git push` sur
+`main` déclenche le déploiement**. Dokploy clone le repo, construit le `Dockerfile`
+sur le VPS (prerender → `.output/public` → nginx), puis bascule le conteneur.
 
 ```bash
-find .output/public/fr -name "*.html" | sed 's|.*/public||'
+git push origin main      # = déploiement
 ```
 
-### 2. Construire l'image
+Risque connu : le prerender demande ~2 Go de RAM (`errors.md` §1). Si le build reste
+`running` sans fin, c'est la RAM du VPS, pas le code — voir la procédure de secours
+ci-dessous.
+
+### Vérifier localement avant de pousser (optionnel mais rapide)
+
+```bash
+npm run build        # ~1 min, produit .output/public (45 fichiers HTML)
+npm run dev          # contrôle visuel
+```
+
+Ou construire l'image complète en local, c'est le même `Dockerfile` que sur le VPS :
+
+```bash
+docker build -t kwik-test-img -f Dockerfile .
+docker run -d --name kwik-test -p 3999:3000 kwik-test-img
+sleep 5
+curl -s -o /dev/null -w "/fr -> %{http_code}\n" http://localhost:3999/fr   # 200
+curl -s -o /dev/null -w "/  -> %{http_code}\n" http://localhost:3999/     # 302
+docker rm -f kwik-test
+```
+
+Premier build à froid : ~20 min (l'apt du toolchain `better-sqlite3` domine).
+Ensuite les couches sont en cache : ~1 min.
+
+### Secours : image locale (si le build VPS pend)
 
 ```bash
 docker build --pull=false --provenance=false --sbom=false \
   -t devmaster2023/kwiktalk-docs:vN -f Dockerfile .
-```
-
-`N` s'incrémente à chaque déploiement. **Ne jamais réutiliser `:latest`** (une image
-périmée d'un ancien projet traîne sur ce compte, `errors.md` §2).
-
-### 3. Vérifier avant de pousser
-
-L'image ne fait que copier `.output/public` : si le `docker build` échoue sur le
-`COPY`, c'est que le build local n'a pas été lancé.
-
-```bash
-# l'image est nginx, pas un node-server
-docker inspect devmaster2023/kwiktalk-docs:vN --format '{{.Config.Cmd}}'
-# attendu : nginx -g daemon off;
-
-# test de fumée local
-docker run -d --name kwik-test -p 3999:3000 devmaster2023/kwiktalk-docs:vN
-sleep 8
-curl -s -o /dev/null -w "/fr -> %{http_code}\n" http://localhost:3999/fr    # 200
-curl -s -o /dev/null -w "/en -> %{http_code}\n" http://localhost:3999/en    # 200
-docker rm -f kwik-test
-```
-
-`/` renvoie `302` (redirect i18n) : c'est normal.
-
-### 4. Pousser
-
-```bash
 docker push devmaster2023/kwiktalk-docs:vN
 ```
 
-**Compter quelques minutes** : ~83 Mo, dont 52 Mo de base `nginx:alpine` (déjà en
-cache sur Docker Hub) et 13 Mo de statique. Si le push casse, c'est le réseau, pas
-la taille : voir `errors.md` §4 (qui ne concerne plus que l'ancienne image
-de 700 Mo).
+`N` s'incrémente à chaque envoi. **Ne jamais réutiliser `:latest`** (une image
+périmée d'un ancien projet traîne sur ce compte, `errors.md` §2). Pour que Dokploy
+serve cette image sans builder, l'app doit être en **General → Source = Docker**
+avec `devmaster2023/kwiktalk-docs:vN` (voir `gotchas.md`).
+
+### Vérifier en ligne
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://kwiktalk-docs.applix.fr/fr
+curl -s https://kwiktalk-docs.applix.fr/fr | grep -c py-10    # sanity check connu
+```
 
 Pour relancer sans risquer de tuer sa propre shell, ne pas utiliser `pkill -f` :
 

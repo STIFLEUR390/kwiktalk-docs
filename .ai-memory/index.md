@@ -41,7 +41,8 @@ Tout le reste du fichier est secondaire face à cette règle.
 
 ## Pièges déjà payés (résumé)
 
-1. **Build Dokploy qui pend 1h** → RAM insuffisante, pas un bug. Voir `errors.md`.
+1. **Build Dokploy qui pend 1h** → RAM insuffisante, pas un bug. Le `Dockerfile`
+   plafonne V8 à 1536 Mo ; si ça pend, c'est `free -h` / le swap. Voir `errors.md` §1.
 2. **`:latest` Docker Hub périmé** → une image Next.js d'un ancien projet traîne et
    sert un contenu faux. Toujours tagger en `vN`.
 3. **Push Docker Hub coupé** → upload long d'une seule couche. Obsolète : l'image
@@ -75,10 +76,7 @@ et **déployée en production** (image `v10`).
 Voir [`workflows.md`](workflows.md). En résumé :
 
 ```bash
-npm run build
-docker build --pull=false --provenance=false --sbom=false -t devmaster2023/kwiktalk-docs:vN -f Dockerfile .
-docker push devmaster2023/kwiktalk-docs:vN
-# puis Dokploy : saveDockerProvider + deploy, et vérifier le digest du conteneur
+git push origin main     # Auto Deploy : Dokploy clone et construit le Dockerfile
 ```
 
 **Toujours vérifier après un build** (cf. `tests.md`) :

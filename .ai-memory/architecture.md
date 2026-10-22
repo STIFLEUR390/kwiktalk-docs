@@ -31,31 +31,42 @@ export default defineNuxtConfig({
 Pas de `app.config.ts` : tout le styling/branding Docus est par défaut. Le nom du
 site affiché dans le `<title>` suffixe vient de Docus, pas de ce fichier.
 
-## Build : deux étapes, deux machines
+## Build : deux étages, dans le `Dockerfile`, sur Dokploy
 
 ```
-LOCAL (RAM dispo)                      VPS Dokploy (RAM faible)
-──────────────────                     ────────────────────────
-npm run build  →  .output/public       docker pull  devmaster2023/kwiktalk-docs:vN
-docker build   →  image vN             docker run   →  port 3000
-docker push    →  Docker Hub          Traefik      →  kwiktalk-docs.applix.fr
+git push main  →  Dokploy clone  →  docker build (VPS)
+                                     ├─ étage build : bun install + nuxt build
+                                     │                → .output/public (prerender)
+                                     └─ étage final : nginx:alpine + statique
+                                   → conteneur port 3000 → Traefik
 ```
 
-Le VPS ne compile **jamais** rien. Il ne fait que tirer une image déjà construite.
+`Auto Deploy` est actif : **un push sur `main` déploie**. L'image Docker Hub
+(`devmaster2023/kwiktalk-docs:vN`) n'est plus le chemin normal, elle sert de
+secours/rollback.
 
-### Le `Dockerfile` : nginx + statique, rien d'autre
+### Le `Dockerfile` en deux étages
 
 ```dockerfile
-FROM nginx:alpine
+FROM oven/bun:1 AS build          # + apt python3 make g++ (better-sqlite3)
+COPY package.json bun.lock ./     # bun install --frozen-lockfile
+COPY . .
+ENV NITRO_PRESET=static
+ENV NODE_OPTIONS="--max-old-space-size=1536"
+RUN bun run build                 # prerender → .output/public
+
+FROM nginx:alpine                 # 2e étage : 13 Mo de statique
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
-COPY .output/public /usr/share/nginx/html
-EXPOSE 3000
+COPY --from=build /app/.output/public /usr/share/nginx/html
 ```
 
-Aucun build dans Docker : `.output/public` doit **déjà** exister (`npm run build`),
-sinon le `COPY` échoue franchement. L'image fait ~83 Mo (52 Mo de nginx:alpine
-+ 13 Mo de statique), ne contient ni Node ni bun, et se construit en quelques
-secondes au lieu de plusieurs minutes.
+`.output` et `node_modules` restent **gitignored et dockerignored** : le build les
+régénère. Les committer n'aiderait à rien et polluerait le repo.
+
+**RAM** : le `bun run build` demande ~2 Go. Sur le VPS c'est la limite connue
+(`errors.md` §1) : d'où le plafond à 1536 Mo. Premier build sur une machine froide :
+~20 min (l'apt du toolchain domine) ; les suivants réutilisent le cache de couches
+(~1 min de build Nuxt + install).
 
 **Ne pas passer `ssr: false`** : Nuxt n'écrirait plus qu'une coquille `index.html`
 (22 routes au lieu de 189, 5 HTML au lieu de 45, plus d'`og:image` dans le HTML) et

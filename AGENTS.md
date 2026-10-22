@@ -15,26 +15,25 @@ les messages d'erreur restent en anglais.
 
 ---
 
-## Règle n°1 : ne jamais builder sur le VPS
+## Règle n°1 : le build se fait dans le `Dockerfile` (sur Dokploy)
 
-Le prerender Nuxt/Docus demande ~2 Go de RAM. Le VPS Dokploy swappe, et le build
-reste `running` **indéfiniment** sans jamais passer en erreur. C'est le piège n°1 du
-projet, déjà rencontré une dizaine de fois.
+Dokploy clone le repo et construit le `Dockerfile` : étage `build`
+(`oven/bun:1` → `bun install` → `bun run build` → prerender dans `.output/public`),
+puis étage final `nginx:alpine`. Un `git push` sur `main` = un déploiement
+(`Auto Deploy` actif), donc l'image sur Docker Hub n'est plus le chemin normal.
 
-**Le build se fait en local**, l'image est poussée sur Docker Hub, Dokploy ne fait
-que la `pull`. Voir [`.ai-memory/workflows.md`](.ai-memory/workflows.md).
+**Le risque à connaître** : le prerender Nuxt/Docus demande ~2 Go de RAM. Si le VPS
+swappe, le build peut rester `running` **indéfiniment** sans erreur — c'est déjà
+arrivé une dizaine de fois. D'où `NODE_OPTIONS=--max-old-space-size=1536` dans le
+`Dockerfile` (mesure faite en local, cf. `nixpacks.toml`). Si un build pend : c'est
+la RAM du VPS, pas le code.
 
 ```bash
-npm run build                                       # produit .output/
+# build local du même Dockerfile (validation avant push, RAM dispo)
 docker build --pull=false --provenance=false --sbom=false \
   -t devmaster2023/kwiktalk-docs:vN -f Dockerfile .
-docker push devmaster2023/kwiktalk-docs:vN
+docker push devmaster2023/kwiktalk-docs:vN   # secours / rollback
 ```
-
-Le **push Docker Hub** a longtemps été instable (uploads longs coupés) : l'image
-`node-server` de ~700 Mo devait être scindée en couches de < 20 Mo. Ce n'est plus le
-cas : l'image actuelle est `nginx:alpine` + `.output/public` (13 Mo de statique en
-une seule couche, ~83 Mo au total), construite en quelques secondes.
 
 ---
 

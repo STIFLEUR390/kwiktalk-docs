@@ -27,8 +27,15 @@ Dokploy affiche `running` indéfiniment. Vérifiable : le même build en local f
   prerender), pas au runtime.
 - Ne pas augmenter `memoryLimit` (cf. erreur 3, le format est rejeté).
 
-**Solution** — Ne pas builder sur le VPS. Build local + image Docker poussée sur
-Docker Hub. Voir [`workflows.md`](workflows.md).
+**Solution** — Le build tourne maintenant **dans le `Dockerfile` sur le VPS** (choix
+assumé, voir `architecture.md`) : le `Dockerfile` plafonne V8 à 1536 Mo
+(`NODE_OPTIONS`), ce qui contient le pic mesuré. Si ça pend quand même :
+
+1. Regarder la RAM réelle avant de relancer : `free -h` sur le VPS, et vérifier le
+   swap (`swapon --show`). Sans swap, 2 Go de pic sur 2-4 Go de VPS = hang.
+2. Libérer de la RAM (arrêter temporairement un service voisin) ou ajouter du swap.
+3. Sinon, secours : build local + `docker push devmaster2023/kwiktalk-docs:vN`, et
+   basculer l'app en **General → Source = Docker** (`workflows.md`).
 
 ---
 
