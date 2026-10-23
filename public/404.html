@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Page introuvable — KwikTalk Docs</title>
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      background: #fff;
+      color: #111827;
+    }
+    main { max-width: 34rem; }
+    .code {
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+    h1 { margin: .5rem 0 1rem; font-size: 1.75rem; line-height: 1.25; }
+    p { margin: 0 0 1rem; color: #4b5563; }
+    .links { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.75rem; }
+    a {
+      display: inline-block;
+      padding: .6rem 1.1rem;
+      border-radius: .5rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid #d1d5db;
+      color: #111827;
+    }
+    a.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+    a:hover { opacity: .85; }
+    hr { margin: 2rem 0; border: 0; border-top: 1px solid #e5e7eb; }
+    .en p { color: #6b7280; }
+    @media (prefers-color-scheme: dark) {
+      body { background: #0b0f19; color: #e5e7eb; }
+      p, .en p { color: #9ca3af; }
+      a { border-color: #374151; color: #e5e7eb; }
+      a.primary { background: #3b82f6; border-color: #3b82f6; color: #fff; }
+      hr { border-top-color: #1f2937; }
+      .code { color: #60a5fa; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="code">Erreur 404</p>
+    <h1>Cette page n'existe pas</h1>
+    <p>
+      Le lien est peut-être ancien : la documentation a été réorganisée autour de
+      votre parcours (démarrer, envoyer, gérer, payer). Repartez de l'accueil.
+    </p>
+    <div class="links">
+      <a class="primary" href="/fr/start/presentation">Démarrage</a>
+      <a href="/fr">Accueil de la documentation</a>
+    </div>
+
+    <hr>
+
+    <div class="en" lang="en">
+      <p class="code">Error 404</p>
+      <h1>This page does not exist</h1>
+      <p>
+        The link may be old: the documentation was reorganised around your journey
+        (start, send, manage, pay). Start again from the home page.
+      </p>
+      <div class="links">
+        <a class="primary" href="/en/start/presentation">Getting started</a>
+        <a href="/en">Documentation home</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

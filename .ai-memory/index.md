@@ -83,7 +83,7 @@ git push origin main     # Auto Deploy : Dokploy clone et construit le Dockerfil
 
 ```bash
 grep -cE '\[500\]|\[404\]' build.log   # doit être 0
-find .output/public -name '*.html' | wc -l  # doit être 50 (une page par route)
+find .output/public -name '*.html' | wc -l  # doit être 51 (50 pages + public/404.html)
 grep -rnE "^ +[a-z_]+: [^\"].*: " content/   # doit être vide (YAML valide)
 ```
 
