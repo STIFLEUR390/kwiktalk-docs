@@ -1,80 +1,88 @@
 ---
 seo:
   title: Documentation
-  description: "Apprenez à utiliser KwikTalk : instances WhatsApp, contacts, modèles de messages, campagnes, chatbot, API et webhooks."
+  description: "Connectez votre numéro WhatsApp, importez vos contacts et envoyez vos campagnes avec KwikTalk."
 ---
 
 ::u-page-hero
 #title
 Documentation KwikTalk
 #description
-Tout ce qu'il faut pour connecter votre numéro, importer vos contacts et envoyer vos premières campagnes WhatsApp.
+Connectez votre numéro WhatsApp, importez vos contacts et envoyez vos campagnes. Tout le parcours, du premier compte au suivi des réponses.
 
 #links
   :::u-button
   ---
   color: neutral
   size: xl
-  to: /fr/overview/first-steps
+  to: /fr/start/quickstart
   trailing-icon: i-lucide-arrow-right
   ---
-  Premiers pas
+  Je débute
   :::
 
   :::u-button
   ---
   color: neutral
-  icon: i-lucide-credit-card
+  icon: i-lucide-send
   size: xl
-  to: /fr/overview/pricing
+  to: /fr/daily/workspace
   variant: outline
   ---
-  Tarifs
+  Utiliser KwikTalk
   :::
 ::
 
 ::u-container{class="py-10"}
 
-## Pour qui est cette documentation ?
+## Vous démarrez
 
-Cette documentation couvre **deux périmètres** :
+Cinq étapes, dans l'ordre, pour arriver à votre premier message envoyé.
 
-- **Les fonctionnalités publiques** — accessibles sans compte : présentation du produit, tarifs, outils gratuits, pages légales et statut.
-- **Les fonctionnalités du rôle `user`** — l'espace de travail complet d'un compte utilisateur : instances WhatsApp, contacts, modèles, messages, campagnes, messages entrants, chatbot, API et webhooks.
+| # | Étape | Page |
+|---|---|---|
+| 1 | Créer un compte et se connecter | [Créer un compte](/fr/start/create-account) |
+| 2 | Brancher votre numéro WhatsApp | [Connecter votre numéro](/fr/start/connect-whatsapp) |
+| 3 | Ajouter vos contacts | [Importer vos contacts](/fr/start/import-contacts) |
+| 4 | Envoyer votre première campagne | [Première campagne](/fr/start/first-campaign) |
+| 5 | Comprendre les chiffres | [Tableau de bord](/fr/daily/dashboard) |
 
-:::note{type="info"}
-L'administration de la plateforme (utilisateurs, rôles, plans, facturation interne, paramètres globaux) n'est pas documentée ici : ces fonctions relèvent des rôles `admin` et `super-admin`.
-:::
+Pressé ? Le **[parcours express](/fr/start/quickstart)** enchaîne les cinq étapes
+sur une seule page.
 
-## Par où commencer
+## Vous utilisez déjà KwikTalk
 
-| Étape | Page |
+| Ce que vous cherchez | Page |
 |---|---|
-| Comprendre l'offre | [Présentation](/fr/overview/overview) |
-| Créer un compte | [Créer un compte](/fr/overview/create-account) |
-| Connecter WhatsApp | [Premiers pas](/fr/overview/first-steps) |
-| Choisir un plan | [Tarifs](/fr/overview/pricing) |
+| Gérer contacts et groupes | [Contacts et groupes](/fr/daily/contacts) |
+| Écrire un modèle de message | [Modèles de messages](/fr/daily/templates) |
+| Piloter, mettre en pause, exporter une campagne | [Campagnes](/fr/daily/campaigns) |
+| Envoyer à un seul destinataire | [Messages individuels](/fr/daily/messages) |
+| Lire les réponses de vos clients | [Messages reçus](/fr/daily/inbox) |
+| Répondre automatiquement | [Chatbot](/fr/daily/chatbot) |
+| Gérer votre abonnement et vos factures | [Compte et facturation](/fr/billing/plans) |
+| Connecter un outil externe | [API](/fr/developers/api) |
 
-## Les fonctionnalités principales
+## Un problème ?
 
-- **[Instances WhatsApp](/fr/features/whatsapp-instances)** — connectez un ou plusieurs numéros via QR code, surveillez leur état.
-- **[Contacts et groupes](/fr/features/contacts-groups)** — importez un fichier Excel, validez les numéros, organisez-les en groupes.
-- **[Modèles de messages](/fr/features/message-templates)** — réutilisez des messages avec variables dynamiques.
-- **[Campagnes](/fr/features/messages-campaigns)** — envoyez en différé ou en lot, avec planification et protections anti-ban.
-- **[Messages entrants](/fr/features/incoming-messages)** — centralisez les réponses de vos destinataires.
-- **[Chatbot](/fr/features/chatbot)** — automatisez les réponses par règles ou par workflow.
+Le **[dépannage](/fr/help/troubleshooting)** couvre les cas les plus fréquents, du QR code qui
+n'apparaît pas à la campagne bloquée. Avant votre premier gros envoi, lisez
+**[Éviter le bannissement](/fr/help/anti-ban)** : c'est ce qui protège votre
+numéro.
 
-## Pour les développeurs
-
-- **[Applications API](/fr/integrations/api-applications)** — créez une clé, apparez-la à une instance, envoiez par `POST /api/v1/messages/send`.
-- **[Webhooks](/fr/integrations/webhooks)** — recevez `message.received`, `message.status.updated`, `instance.connected`… avec signature HMAC-SHA256.
-
-## Aide et confiance
-
-- **[Formatteur WhatsApp](/fr/resources/whatsapp-formatter)** — outil gratuit pour rédiger et copier un message au format WhatsApp.
-- **[Anti-spam et anti-ban](/fr/resources/anti-spam)** — les trois modes de protection et les bonnes pratiques d'envoi.
-- **[FAQ](/fr/resources/faq)** — validation des numéros, sécurité, multi-numéros, essai gratuit.
-- **[Sécurité](/fr/resources/security)** — chiffrement, clés API, contrôle des accès, bonnes pratiques.
-- **[Statut de la plateforme](/fr/resources/status)** — disponibilité en temps réel et maintenances.
+Un mot vous échappe ? Le **[glossaire](/fr/start/glossary)** définit les termes
+de KwikTalk et de WhatsApp.
 
 ::
+
+::u-alert{color="info" icon="i-lucide-book-open"}
+Cette documentation décrit l'utilisation du compte. L'administration de la
+plateforme (utilisateurs de l'organisation, plans, paramètres globaux) relève du
+support KwikTalk et n'est pas traitée ici.
+::
+
+## Voir aussi
+
+- **Tarifs** et fonctions des plans : [Plans et quotas](/fr/billing/plans)
+- **Outils gratuits** (formatteur de texte WhatsApp, guide anti-ban public) :
+  sur le site KwikTalk

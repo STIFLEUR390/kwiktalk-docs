@@ -53,20 +53,25 @@ en inventer — voir [`.ai-memory/tests.md`](.ai-memory/tests.md).
 
 ## Contenu
 
-- Tout le contenu vit dans `content/{fr,en}/`, **42 pages** (21 par locale).
+- Tout le contenu vit dans `content/{fr,en}/`, **50 pages** (25 par locale).
 - **Les deux locales partagent exactement les mêmes chemins** : sections
-  `1.overview`, `2.features`, `3.integrations`, `4.account`, `5.resources`, et des
+  `1.start`, `2.daily`, `3.billing`, `4.help`, `5.developers`, et des
   fichiers identiques. Slugs **anglais dans les deux cas**, traduction portée par
   `title:` et `.navigation.yml`.
   ⚠️ Obligatoire : `nuxt-i18n` ne traduit que le **préfixe de locale**, un slug
   divergent donne un **404 au clic sur le sélecteur de langue** (16 pages/21 avant
   correction). Toute page ajoutée doit exister **aux deux mêmes chemins**.
-- **Les fichiers sont numérotés** : le préfixe `1.` d'un dossier est réservé à son
-  `index.md`, les pages commencent à `2.`. Le préfixe n'apparaît pas dans l'URL.
+- **Les fichiers sont numérotés à partir de `1.`** : `1.presentation.md`,
+  `2.quickstart.md`… Le préfixe n'apparaît pas dans l'URL
+  (`1.start/4.connect-whatsapp.md` → `/fr/start/connect-whatsapp`).
 - Chaque dossier de section contient un **`.navigation.yml`** (`title:`) : sans lui,
   la sidebar affiche le nom de dossier brut — d'où les titres français séparés
-  (« Pour démarrer », « Fonctionnalités », « Mon compte »…).
-- Un dossier **sans `index.md` renvoie un 404** sur son URL racine.
+  (« Démarrage », « Au quotidien », « Mon compte »…).
+- **Ne jamais créer de `index.md` dans un sous-dossier de `content/<locale>/`** :
+  Docus le réserve à la racine (`content/<locale>/index.md`) et renvoie un **404**
+  pour `<section>/index.md`. Voir [`.ai-memory/gotchas.md`](.ai-memory/gotchas.md).
+  Conséquence : les URL de section (`/fr/start`) renvoient 404, la première page
+  numérotée sert d'entrée.
 - Les deux locales doivent rester **synchronisées** : toute page ajoutée en `fr`
   doit l'être en `en`, et inversement.
 

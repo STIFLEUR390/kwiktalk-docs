@@ -62,13 +62,13 @@ Tout le reste du fichier est secondaire face à cette règle.
 Réécrite le 11/10/2026 à partir du **code réel** (`kwiktalk-inertiajs`), en bilingue,
 et **déployée en production** (image `v10`).
 
-- **42 pages** : 21 FR + 21 EN, réparties en 5 sections.
+- **50 pages** : 25 FR + 25 EN, réparties en 5 sections.
 - **Portée** : pages publiques + rôle `user` — jamais l'administration.
 - **Images** : générées avec `codesnap` (`--disable-watermark`), dans `public/images/`.
 - **Sections (identiques dans les deux locales, slugs anglais)** :
-  `1.overview`, `2.features`, `3.integrations`, `4.account`, `5.resources` —
+  `1.start`, `2.daily`, `3.billing`, `4.help`, `5.developers` —
   indispensable au sélecteur de langue. Seuls les `title:` / `.navigation.yml`
-  diffèrent (« Pour démarrer », « Fonctionnalités »…).
+  diffèrent (« Démarrage », « Au quotidien »…).
 - Branding : logo « KwikTalk », suffixe de titre « KwikTalk Docs ».
 
 ### Procédure de mise à jour
@@ -83,7 +83,7 @@ git push origin main     # Auto Deploy : Dokploy clone et construit le Dockerfil
 
 ```bash
 grep -cE '\[500\]|\[404\]' build.log   # doit être 0
-find .output/public -name '*.html' | wc -l  # doit être 45 (42 pages + 3 fallbacks)
+find .output/public -name '*.html' | wc -l  # doit être 50 (une page par route)
 grep -rnE "^ +[a-z_]+: [^\"].*: " content/   # doit être vide (YAML valide)
 ```
 
@@ -93,7 +93,7 @@ grep -rnE "^ +[a-z_]+: [^\"].*: " content/   # doit être vide (YAML valide)
   *peer dependency obligatoire* de Docus (`12.x`, non optionnel) utilisé par la
   base SQLite de contenu **au build**. Il n'est pas dans `.output/` (inutile au
   runtime), donc retirer `@nuxt/content` du `package.json` casserait le build.
-- **Images OG servies** sur les 42 pages — a nécessité `nitro.prerender
+- **Images OG servies** sur les 50 pages — a nécessité `nitro.prerender
   .autoSubfolderIndex: true` (sans quoi Nitro ne trouvait pas le fichier et
   retombait en SSR). Voir [`gotchas.md`](gotchas.md) section « Prerender ».
 - Non documentés (à voir si besoin) : `/ressources/blog`, `/confidentialite`,

@@ -98,8 +98,8 @@ npm run build > /tmp/build.log 2>&1; echo "exit=$?"
 grep -cE '\[500\]|\[404\]' /tmp/build.log        # attendu : 0
 grep -E '\[500\]|\[404\]|Linked from' /tmp/build.log
 
-# 2. toutes les pages générées (45 = 42 pages + index.html, 200.html, 404.html)
-find .output/public -name '*.html' | wc -l       # attendu : 45
+# 2. toutes les pages générées (50 = 25 FR + 25 EN)
+find .output/public -name '*.html' | wc -l       # attendu : 50
 grep -oE 'Prerendered [0-9]+ routes' /tmp/build.log  # attendu : ~137
 
 # 3. aucun frontmatter YAML invalide (virgule+espace non quoté)
@@ -133,7 +133,7 @@ agent-browser close
 
 Points de contrôle visuels : logo « KwikTalk » (pas « kwiktalk-docs »), titres de
 section accentués, un seul H1, images `public/images/` affichées, `og:image`
-présent, **bascule de langue sur les 21 pages dans les deux sens**, aucune erreur
+présent, **bascule de langue sur les 25 pages dans les deux sens**, aucune erreur
 console, recherche `Ctrl+K` qui retourne des résultats.
 
 ### Bascule de langue — test obligatoire
@@ -148,7 +148,7 @@ ajout de page.
 # (h1 vide ou « Page not found » = KO)
 ```
 
-Attendu : **21/21 dans chaque sens**.
+Attendu : **25/25 dans chaque sens**.
 
 ⚠️ Piège de test : `agent-browser eval` renvoie du JSON **échappé** (`\"`) —
 extraire les valeurs avec `tr -d '"'` ou lire `location.pathname` en texte brut,

@@ -1,80 +1,88 @@
 ---
 seo:
   title: Documentation
-  description: "Learn how to use KwikTalk: WhatsApp instances, contacts, message templates, campaigns, chatbot, API and webhooks."
+  description: "Connect your WhatsApp number, import your contacts and send your campaigns with KwikTalk."
 ---
 
 ::u-page-hero
 #title
-KwikTalk documentation
+KwikTalk Documentation
 #description
-Everything you need to connect your number, import your contacts and send your first WhatsApp campaigns.
+Connect your WhatsApp number, import your contacts and send your campaigns. The whole journey, from your first account to tracking replies.
 
 #links
   :::u-button
   ---
   color: neutral
   size: xl
-  to: /en/overview/first-steps
+  to: /en/start/quickstart
   trailing-icon: i-lucide-arrow-right
   ---
-  First steps
+  I'm new
   :::
 
   :::u-button
   ---
   color: neutral
-  icon: i-lucide-credit-card
+  icon: i-lucide-send
   size: xl
-  to: /en/overview/pricing
+  to: /en/daily/workspace
   variant: outline
   ---
-  Pricing
+  Use KwikTalk
   :::
 ::
 
 ::u-container{class="py-10"}
 
-## Who is this documentation for?
+## You are getting started
 
-This documentation covers **two scopes**:
+Five steps, in order, to reach your first message sent.
 
-- **Public features** — available without an account: product overview, pricing, free tools, legal pages and status.
-- **`user` role features** — the full workspace of a regular account: WhatsApp instances, contacts, templates, messages, campaigns, incoming messages, chatbot, API and webhooks.
+| # | Step | Page |
+|---|---|---|
+| 1 | Create an account and sign in | [Create an account](/en/start/create-account) |
+| 2 | Connect your WhatsApp number | [Connect your number](/en/start/connect-whatsapp) |
+| 3 | Add your contacts | [Import your contacts](/en/start/import-contacts) |
+| 4 | Send your first campaign | [First campaign](/en/start/first-campaign) |
+| 5 | Understand the numbers | [Dashboard](/en/daily/dashboard) |
 
-:::u-alert{color="info" icon="i-lucide-info"}
-Platform administration (users, roles, plans, internal billing, global settings) is **not** documented here — those functions belong to the `admin` and `super-admin` roles.
-:::
+In a hurry? The **[quick tour](/en/start/quickstart)** chains the five steps on a
+single page.
 
-## Where to start
+## You already use KwikTalk
 
-| Step | Page |
+| What you are looking for | Page |
 |---|---|
-| Understand the offer | [Overview](/en/overview/overview) |
-| Create an account | [Create an account](/en/overview/create-account) |
-| Connect WhatsApp | [First steps](/en/overview/first-steps) |
-| Pick a plan | [Pricing](/en/overview/pricing) |
+| Manage contacts and groups | [Contacts and groups](/en/daily/contacts) |
+| Write a message template | [Message templates](/en/daily/templates) |
+| Drive, pause, export a campaign | [Campaigns](/en/daily/campaigns) |
+| Send to a single recipient | [Single messages](/en/daily/messages) |
+| Read your customers' replies | [Incoming messages](/en/daily/inbox) |
+| Answer automatically | [Chatbot](/en/daily/chatbot) |
+| Manage your subscription and invoices | [Account and billing](/en/billing/plans) |
+| Connect an external tool | [API](/en/developers/api) |
 
-## Main features
+## Something is wrong?
 
-- **[WhatsApp instances](/en/features/whatsapp-instances)** — connect one or more numbers via QR code, monitor their state.
-- **[Contacts and groups](/en/features/contacts-groups)** — import an Excel file, validate numbers, organise them into groups.
-- **[Message templates](/en/features/message-templates)** — reuse messages with dynamic variables.
-- **[Campaigns](/en/features/messages-campaigns)** — send in bulk or on a schedule, with anti-ban protection.
-- **[Incoming messages](/en/features/incoming-messages)** — collect your recipients' replies.
-- **[Chatbot](/en/features/chatbot)** — automate replies with rules or workflows.
+**[Troubleshooting](/en/help/troubleshooting)** covers the most common cases,
+from a QR code that never shows up to a blocked campaign. Before your first large
+send, read **[Avoiding bans](/en/help/anti-ban)**: that is what protects your
+number.
 
-## For developers
-
-- **[API applications](/en/integrations/api-applications)** — create a key, bind it to an instance, call `POST /api/v1/messages/send`.
-- **[Webhooks](/en/integrations/webhooks)** — receive `message.received`, `message.status.updated`, `instance.connected`… with HMAC-SHA256 signatures.
-
-## Help and trust
-
-- **[WhatsApp formatter](/en/resources/whatsapp-formatter)** — free tool to write and copy a message in WhatsApp format.
-- **[Anti-spam and anti-ban](/en/resources/anti-spam)** — the three protection modes and healthy sending practices.
-- **[FAQ](/en/resources/faq)** — number validation, security, multiple numbers, free trial.
-- **[Security](/en/resources/security)** — encryption, API keys, access control, best practices.
-- **[Platform status](/en/resources/status)** — real-time availability and maintenance.
+Lost on a word? The **[glossary](/en/start/glossary)** defines KwikTalk and
+WhatsApp terms.
 
 ::
+
+::u-alert{color="info" icon="i-lucide-book-open"}
+This documentation describes how to use your account. Platform administration
+(organisation users, plans, global settings) is handled by KwikTalk support and
+is not covered here.
+::
+
+## See also
+
+- **Pricing** and what each plan includes: [Plans and quotas](/en/billing/plans)
+- **Free tools** (WhatsApp text formatter, public anti-ban guide): on the
+  KwikTalk website

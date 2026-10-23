@@ -234,3 +234,20 @@ plutôt l'**id de config** :
 docker pull docker.io/devmaster2023/kwiktalk-docs:vN
 # l'id affiché doit être celui du build local (docker inspect --format '{{.Id}}')
 ```
+
+## Docus : jamais de `index.md` dans un sous-dossier de `content/<locale>/`
+
+**Piège vérifié au build** : `content/fr/1.start/index.md` renvoie **404**
+(`statusMessage: 'Page not found'`) alors que `content/fr/1.start/2.quickstart.md`
+répond 200. Test contrôlé avec `content/fr/zz-test/index.md` + `2.child.md` :
+`/fr/zz-test` → 404, `/fr/zz-test/child` → 200.
+
+Cause : `node_modules/docus/content.config.ts` déclare la collection
+`landing_<locale>` avec `source: { include: '<locale>/index.md' }` (racine
+uniquement) et la collection `docs_<locale>` avec `exclude: ['<locale>/index.md']`
+appliqué à **tout** le sous-arbre. Un `index.md` de section n'appartient donc à
+aucune collection.
+
+**Conséquence** : pas de page d'index par section, la première page numérotée
+(`1.presentation.md`, `1.workspace.md`, `1.plans.md`…) sert d'entrée, et les URL
+de section (`/fr/start`) renvoient 404 — comportement identique à l'ancienne doc.
